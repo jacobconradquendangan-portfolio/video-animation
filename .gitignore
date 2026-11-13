@@ -1,0 +1,23 @@
+node_modules/
+
+# Rendered videos and preview frames
+out/
+dist/
+build/
+
+# Remotion and tool caches
+.remotion/
+.cache/
+
+# Test output and logs
+coverage/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Local environment and OS files
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

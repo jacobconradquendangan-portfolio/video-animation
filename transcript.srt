@@ -1,0 +1,123 @@
+1
+00:00:00,000 --> 00:00:07,800
+The first six years of a child’s life are a blur of rapid growth, milestone moments, and critical health markers.
+
+2
+00:00:07,900 --> 00:00:16,433
+For generations, families have relied on physical baby books, notebooks, and government immunization cards to capture childhood.
+
+3
+00:00:16,933 --> 00:00:20,533
+These tangible keepsakes hold immense sentimental value.
+
+4
+00:00:21,033 --> 00:00:22,700
+But paper is fragile.
+
+5
+00:00:22,967 --> 00:00:29,200
+It gets lost in transit, damaged over time, or filled with scattered, unorganized entries.
+
+6
+00:00:29,733 --> 00:00:36,367
+When a parent rushes to a clinic, the exact medical history they need is often buried or missing entirely.
+
+7
+00:00:36,833 --> 00:00:39,667
+The system isn’t broken because parents don’t care—
+
+8
+00:00:39,967 --> 00:00:45,033
+it’s broken because paper can’t keep pace with the demands of modern child healthcare.
+
+9
+00:00:45,200 --> 00:00:46,300
+Enter BabyBook+.
+
+10
+00:00:46,467 --> 00:00:53,700
+Designed not to replace the family keepsake, but to act as its secure, intelligent digital companion.
+
+11
+00:00:53,900 --> 00:00:59,400
+BabyBook+ consolidates infant care into a single, intuitive mobile platform.
+
+12
+00:00:59,600 --> 00:01:05,133
+Parents can seamlessly manage child profiles, log illnesses, track allergies,
+
+13
+00:01:05,300 --> 00:01:11,100
+and monitor WHO-standard growth metrics like height, weight, and head circumference.
+
+14
+00:01:11,100 --> 00:01:14,667
+But a baby book isn’t just about medicine—
+
+15
+00:01:14,667 --> 00:01:16,000
+it’s about magic.
+
+16
+00:01:16,000 --> 00:01:20,067
+BabyBook+ features a dedicated Milestone and Memory Archive,
+
+17
+00:01:20,300 --> 00:01:27,233
+allowing parents to log developmental breakthroughs, record daily nutrition, and upload photo memories with custom captions.
+
+18
+00:01:27,300 --> 00:01:38,033
+All of this is tied together with automated checkup and vaccine reminders, directly championing Sustainable Development Goal 3—Good Health and Well-being.
+
+19
+00:01:38,133 --> 00:01:42,300
+Digitizing a child’s health records raises an immediate question:
+
+20
+00:01:42,667 --> 00:01:44,233
+Who controls the data?
+
+21
+00:01:44,400 --> 00:01:48,567
+Traditional apps lock information behind corporate cloud walls.
+
+22
+00:01:48,833 --> 00:01:56,167
+BabyBook+ takes a radically different approach with a parent-controlled, QR-based consultation architecture.
+
+23
+00:01:56,433 --> 00:02:05,100
+In the clinic, the parent selects precisely which records to share and generates a time-based, encrypted QR token.
+
+24
+00:02:05,100 --> 00:02:10,300
+The pediatrician scans this code to open a secure, view-only web viewer.
+
+25
+00:02:10,300 --> 00:02:15,667
+Parents retain total control—with the ability to manually revoke access at any moment,
+
+26
+00:02:15,900 --> 00:02:19,967
+or let the token expire automatically once the checkup concludes,
+
+27
+00:02:20,133 --> 00:02:24,100
+while every interaction is permanently recorded in an audit log.
+
+28
+00:02:24,267 --> 00:02:31,800
+By marrying clinical precision with sentimental preservation, BabyBook+ bridges the gap between generations.
+
+29
+00:02:32,100 --> 00:02:34,667
+Physical keepsakes capture the memories;
+
+30
+00:02:34,933 --> 00:02:40,067
+BabyBook+ secures the health and documents every milestone along the way.
+
+31
+00:02:40,300 --> 00:02:52,933
+Together, they form a complete, organized, and deeply personal chronicle of early development—engineered to empower parents, assist pediatricians, and protect the health of every child.

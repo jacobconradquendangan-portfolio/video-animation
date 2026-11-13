@@ -1,0 +1,23 @@
+{
+  "name": "babybook-motion",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preview": "remotion studio src/index.ts",
+    "still": "remotion still src/index.ts BabyBookExplainer out\\review.png",
+    "render": "remotion render src/index.ts BabyBookExplainer out\\babybook-explainer.mp4",
+    "captions": "node --experimental-strip-types scripts\\write-captions.mjs",
+    "score": "node scripts\\generate-score.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}

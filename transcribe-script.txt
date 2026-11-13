@@ -1,0 +1,27 @@
+ACT I: The Paper Trail Problem (0:00 – 0:50)
+
+Timestamp & Duration: 0:00 – 0:50 (50 seconds)
+
+Voiceover (VO) Script:
+"The first six years of a child’s life are a blur of rapid growth, milestone moments, and critical health markers. For generations, families have relied on physical baby books, notebooks, and government immunization cards to capture childhood. These tangible keepsakes hold immense sentimental value. But paper is fragile. It gets lost in transit, damaged over time, or filled with scattered, unorganized entries. When a parent rushes to a clinic, the exact medical history they need is often buried or missing entirely. The system isn't broken because parents don't care—it’s broken because paper can't keep pace with the demands of modern child healthcare."
+
+ACT II: Introducing BabyBook+ — Health, Milestones, and Memories (0:50 – 1:55)
+
+Timestamp & Duration: 0:50 – 1:55 (65 seconds)
+
+Voiceover (VO) Script:
+"Enter BabyBook+. Designed not to replace the family keepsake, but to act as its secure, intelligent digital companion. BabyBook+ consolidates infant care into a single, intuitive mobile platform. Parents can seamlessly manage child profiles, log illnesses, track allergies, and monitor WHO-standard growth metrics like height, weight, and head circumference. But a baby book isn't just about medicine—it's about magic. BabyBook+ features a dedicated Milestone and Memory Archive, allowing parents to log developmental breakthroughs, record daily nutrition, and upload photo memories with custom captions. All of this is tied together with automated checkup and vaccine reminders, directly championing Sustainable Development Goal 3—Good Health and Well-being."
+
+ACT III: The Privacy Shield & QR Consultation Access (1:55 – 2:45)
+
+Timestamp & Duration: 1:55 – 2:45 (50 seconds)
+
+Voiceover (VO) Script:
+"Digitizing a child’s health records raises an immediate question: Who controls the data? Traditional apps lock information behind corporate cloud walls. BabyBook+ takes a radically different approach with a parent-controlled, QR-based consultation architecture. In the clinic, the parent selects precisely which records to share and generates a time-based, encrypted QR token. The pediatrician scans this code to open a secure, view-only web viewer. Parents retain total control—with the ability to manually revoke access at any moment, or let the token expire automatically once the checkup concludes, while every interaction is permanently recorded in an audit log."
+
+ACT IV: The Hybrid Future of Childhood (2:45 – 3:30)
+
+Timestamp & Duration: 2:45 – 3:30 (45 seconds)
+
+Voiceover (VO) Script:
+"By marrying clinical precision with sentimental preservation, BabyBook+ bridges the gap between generations. Physical keepsakes capture the memories; BabyBook+ secures the health and documents every milestone along the way. Together, they form a complete, organized, and deeply personal chronicle of early development—engineered to empower parents, assist pediatricians, and protect the health of every child."
