@@ -810,7 +810,7 @@ const ActOne = ({frame}: {frame: number}) => {
         {/* Loose records arrive in sequence with the narration. */}
         <g
           opacity={transitPaper}
-          transform={`translate(${interpolate(transitProgress, [0, 1], [1000, 520])} ${interpolate(transitProgress, [0, 1], [445, 480])})`}
+          transform={`translate(${interpolate(transitProgress, [0, 1], [250, 250])} ${interpolate(transitProgress, [0, 1], [445, 480])}) scale(${interpolate(transitProgress, [0, 1], [1, 1.5])})`}
         >
           <g
             transform={`rotate(${interpolate(transitProgress, [0, 1], [4, -10])} 110 75)`}
@@ -844,7 +844,7 @@ const ActOne = ({frame}: {frame: number}) => {
 
         <g
           opacity={wornPaper}
-          transform={`translate(${interpolate(wornProgress, [0, 1], [900, 350])} ${interpolate(wornProgress, [0, 1], [560, 660])})`}
+          transform={`translate(${interpolate(wornProgress, [0, 1], [250, 250])} ${interpolate(wornProgress, [0, 1], [560, 660])}) scale(${interpolate(wornProgress, [0, 1], [1, 1.5])})`}
         >
           <g transform={`rotate(${interpolate(wornProgress, [0, 1], [18, 8])} 94 66)`} filter="url(#act1-cutout-shadow)">
             <path d="M6 5 186 0 188 126 0 132Z" fill="#D9E5DD" stroke={K.night} strokeWidth="3" />
@@ -868,7 +868,7 @@ const ActOne = ({frame}: {frame: number}) => {
 
         <g
           opacity={looseEntry}
-          transform={`translate(${interpolate(looseProgress, [0, 1], [910, 690])} ${interpolate(looseProgress, [0, 1], [560, 648])})`}
+          transform={`translate(${interpolate(looseProgress, [0, 1], [430, 430])} ${interpolate(looseProgress, [0, 1], [560, 648])}) scale(${interpolate(looseProgress, [0, 1], [1, 1.5])})`}
         >
           <g transform={`rotate(${interpolate(looseProgress, [0, 1], [12, -7])} 78 54)`} filter="url(#act1-cutout-shadow)">
             <path d="M0 0H156V108H0Z" fill="#FFF8E9" stroke={K.night} strokeWidth="2.5" />
