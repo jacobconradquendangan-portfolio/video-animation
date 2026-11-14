@@ -2662,6 +2662,61 @@ const StoryCaption = ({actIndex}: {actIndex: number}) => {
   );
 };
 
+/* ============================================================================
+ * VOX BACKGROUND — subtle animated backdrop for every act
+ * Drifting soft blobs + slow vignette breath. Organic "random" motion via
+ * incommensurate sine waves (stable frame-to-frame, no flicker).
+ * ============================================================================ */
+const VoxBackground = ({frame, actIndex}: {frame: number; actIndex: number}) => {
+  const driftX = (n: number, speed: number, amount: number) => Math.sin(frame * speed + n) * amount;
+  const driftY = (n: number, speed: number, amount: number) => Math.cos(frame * speed + n * 1.7) * amount;
+
+  const blobs = [
+    {n: 0, x: 300, y: 200, r: 560, speed: 0.018, amount: 40, color: E.gold, opacity: 0.06},
+    {n: 1, x: 1500, y: 400, r: 700, speed: 0.014, amount: 55, color: E.blue, opacity: 0.05},
+    {n: 2, x: 600, y: 700, r: 620, speed: 0.022, amount: 35, color: E.coral, opacity: 0.04},
+    {n: 3, x: 1300, y: 900, r: 800, speed: 0.011, amount: 45, color: E.sage, opacity: 0.05},
+    {n: 4, x: 900, y: 300, r: 500, speed: 0.019, amount: 30, color: E.pink, opacity: 0.04},
+  ];
+
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      {blobs.map((b, i) => {
+        const x = b.x + driftX(b.n, b.speed, b.amount);
+        const y = b.y + driftY(b.n, b.speed, b.amount);
+        const pulse = 1 + Math.sin(frame * 0.02 + i) * 0.08;
+        return (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: x - b.r / 2,
+              top: y - b.r / 2,
+              width: b.r * pulse,
+              height: b.r * pulse,
+              background: b.color,
+              opacity: b.opacity,
+              borderRadius: '50%',
+              filter: 'blur(64px)',
+              pointerEvents: 'none',
+            }}
+          />
+        );
+      })}
+
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'radial-gradient(circle at 50% 40%, rgba(22,40,58,0.015), rgba(22,40,58,0.07) 70%)',
+          pointerEvents: 'none',
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
 const ActScene = ({actIndex}: {actIndex: number}) => {
   const frame = useCurrentFrame();
   const fade = interpolate(frame, [actFrames[actIndex] - 13, actFrames[actIndex]], [1, 0], {
@@ -2695,6 +2750,7 @@ const ActScene = ({actIndex}: {actIndex: number}) => {
           transformOrigin: '50% 46%',
         }}
       >
+        <VoxBackground frame={frame} actIndex={actIndex} />
         <Scene frame={frame} />
         <PremiumFinish />
         <EditorialChrome
