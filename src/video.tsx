@@ -1147,18 +1147,18 @@ const ActTwo = ({frame}: {frame: number}) => {
    * cue boundaries; enter babybook+ is the default.
    * ============================================================================ */
   const act2Images = [
-    { startSec: 0, endSec: 1.1, src: 'image/enter babybook+.jpg' },
+    { startSec: 0, endSec: 1.1, src: 'image/enter babybook+.png' },
     { startSec: 1.25, endSec: 8.51, src: null },
     { startSec: 8.71, endSec: 14.21, src: null },
-    { startSec: 14.41, endSec: 16.80, src: 'image/manage child profile.jpg' },
-    { startSec: 16.80, endSec: 18.45, src: 'image/log illnesses.jpg' },
-    { startSec: 18.45, endSec: 19.94, src: 'image/track allergies.jpg' },
-    { startSec: 20.1, endSec: 25.9, src: 'image/monitor who.jpg' },
+    { startSec: 14.41, endSec: 16.80, src: 'image/manage child profile.png' },
+    { startSec: 16.80, endSec: 18.45, src: 'image/log illnesses.png' },
+    { startSec: 18.45, endSec: 19.94, src: 'image/track allergies.png' },
+    { startSec: 20.1, endSec: 25.9, src: 'image/monitor who.png' },
     { startSec: 25.9, endSec: 29.45, src: null },
     { startSec: 29.45, endSec: 30.8, src: null },
-    { startSec: 30.8, endSec: 34.85, src: 'image/dedicated milestone.jpg' },
-    { startSec: 35.1, endSec: 42.03, src: 'image/upload photo memories.jpg' },
-    { startSec: 42.1, endSec: 52.83, src: 'image/automated checkup.jpg' },
+    { startSec: 30.8, endSec: 34.85, src: 'image/dedicated milestone.png' },
+    { startSec: 35.1, endSec: 42.03, src: 'image/upload photo memories.png' },
+    { startSec: 42.1, endSec: 52.83, src: 'image/automated checkup.png' },
   ];
 
   const nowSec = frame / fps;
@@ -1199,6 +1199,24 @@ const ActTwo = ({frame}: {frame: number}) => {
     }
   }
 
+  // Vox-style entrance animation: runs once at the very start, not on every image change
+  const firstCueStartFrame = Math.round(act2Images[0].startSec * fps); // 0
+  const imageIn = interpolate(frame, [firstCueStartFrame, firstCueStartFrame + 15], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const imageScale = interpolate(imageIn, [0, 1], [0.92, 1]);
+  const imageFloat = floatY(frame, 0.025, 4);
+  // Subtle volume breathe: gentle scale pulse + tiny rotation for 3D feel
+  const imageBreathe = interpolate(frame, [0, 60], [0.995, 1.005], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const imageRotate = interpolate(frame, [0, 40], [-0.4, 0.4], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
       <div
@@ -1211,6 +1229,14 @@ const ActTwo = ({frame}: {frame: number}) => {
       />
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
         <VoxDefs prefix="act2" />
+        {/* Image volume shadow */}
+        <filter id="act2-image-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="4" dy="8" stdDeviation="10" floodColor="#16283A" floodOpacity="0.18" />
+        </filter>
+        {/* Subtle inner glow for image depth */}
+        <filter id="act2-image-glow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#FFFFFF" floodOpacity="0.08" />
+        </filter>
         <rect x="0" y="0" width="1920" height="1080" fill="url(#act2-ruled-paper)" />
         <path d="M0 845 Q445 815 912 842 T1920 832 V1080 H0 Z" fill="#EFE8DA" />
         <line x1="0" y1="840" x2="1920" y2="835" stroke="#D2C6B2" strokeWidth="2.5" />
@@ -1271,41 +1297,49 @@ const ActTwo = ({frame}: {frame: number}) => {
         {/* Narration-synced images */}
         <image
           key="act2-active-image"
-          x={1000}
-          y={110}
-          width={440}
-          height={700}
-          href={staticFile(activeImage ?? 'image/enter babybook+.jpg')}
+          x={990}
+          y={30}
+          width={600}
+          height={920}
+          href={staticFile(activeImage ?? 'image/enter babybook+.png')}
           preserveAspectRatio="xMidYMid meet"
-          style={{opacity: 1 - crossProgress}}
+          style={{
+            opacity: 1 - crossProgress,
+            transform: `scale(${imageScale * imageBreathe}) translate(0, ${imageFloat}px) rotate(${imageRotate}deg)`,
+            filter: 'url(#act2-image-shadow) url(#act2-image-glow)',
+          }}
         />
         {nextImage && (
           <image
             key="act2-next-image"
-            x={1000}
-            y={110}
-            width={440}
-            height={700}
+            x={990}
+            y={30}
+            width={600}
+            height={920}
             href={staticFile(nextImage)}
             preserveAspectRatio="xMidYMid meet"
-            style={{opacity: crossProgress}}
+            style={{
+              opacity: crossProgress,
+              transform: `scale(${imageScale * imageBreathe}) translate(0, ${imageFloat}px) rotate(${imageRotate}deg)`,
+              filter: 'url(#act2-image-shadow) url(#act2-image-glow)',
+            }}
           />
         )}
 
         {/* SDG 3 Editorial Stamp Badge */}
         <g opacity={sdg} transform={`translate(${interpolate(sdg, [0, 1], [28, 0])} 0)`} filter="url(#act2-cutout-shadow)">
-          <rect x="1590" y="630" width="300" height="118" fill="#4C9F38" stroke={K.night} strokeWidth="3.5" />
-          <text x="1612" y="690" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="54" fontWeight="800">
+          <rect x="1530" y="630" width="300" height="118" fill="#4C9F38" stroke={K.night} strokeWidth="3.5" />
+          <text x="1552" y="690" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="54" fontWeight="800">
             3
           </text>
-          <path d="M1608 711h13l6-10 7 19 8-13h12" fill="none" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="1660" y="657" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="700">
+          <path d="M1548 711h13l6-10 7 19 8-13h12" fill="none" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <text x="1600" y="657" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="700">
             Sustainable Development Goal
           </text>
-          <text x="1660" y="690" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
+          <text x="1600" y="690" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
             Good health and
           </text>
-          <text x="1660" y="716" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
+          <text x="1600" y="716" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
             well-being
           </text>
         </g>
@@ -2110,6 +2144,7 @@ const ActFour = ({frame}: {frame: number}) => {
   ];
   const outroTagline = ease(frame, logoStart + 42, 26);
   const outroFooter = ease(frame, logoStart + 56, 26);
+  const outroFloat = floatY(frame, 0.02, 3) * outro;
 
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
@@ -2260,11 +2295,26 @@ const ActFour = ({frame}: {frame: number}) => {
 
         {/* Outro Card */}
         <g opacity={outro}>
+          {/* Volume shadow behind the card for depth */}
+          <rect x="6" y="6" width="1920" height="1080" fill="#16283A" opacity={0.14} />
+          {/* Vox-style vignette glow behind card */}
+          <radialGradient id="act4-card-glow" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          </radialGradient>
+          <rect x="0" y="0" width="1920" height="1080" fill="url(#act4-card-glow)" />
           <rect x="0" y="0" width="1920" height="1080" fill="#F9F6F0" />
           <rect x="0" y="0" width="1920" height="1080" fill="url(#act4-ruled-paper)" />
-          <g transform="translate(592.5 392.5) scale(0.7)">
+          {/* Inner bevel highlight top edge */}
+          <rect x="0" y="0" width="1920" height="2" fill="#FFFFFF" opacity={0.4} />
+          {/* Inner bevel shadow bottom edge */}
+          <rect x="0" y="1078" width="1920" height="2" fill="#16283A" opacity={0.12} />
+          <g
+            transform={`translate(592.5 ${392.5 + outroFloat}) scale(${0.7 + (1 - outro) * 0.03})`}
+            filter="url(#act4-brand-shadow)"
+          >
             <BabyBookBookIcon x={0} y={0} scale={1} drawProgress={bookDraw} pageProgress={pagesReveal} />
-            <g opacity={babyReveal} transform={`translate(0 ${babyY})`} filter="url(#act4-brand-shadow)">
+            <g opacity={babyReveal} transform={`translate(0 ${babyY})`}>
               <text
                 x="280"
                 y="250"
@@ -2278,7 +2328,7 @@ const ActFour = ({frame}: {frame: number}) => {
                 baby
               </text>
             </g>
-            <g opacity={bookReveal} transform={`translate(0 ${bookY})`} filter="url(#act4-brand-shadow)">
+            <g opacity={bookReveal} transform={`translate(0 ${bookY})`}>
               <text
                 x="580"
                 y="250"
@@ -2296,7 +2346,6 @@ const ActFour = ({frame}: {frame: number}) => {
               <g
                 opacity={crossReveal}
                 transform={`translate(35 35) rotate(${crossRotation}) scale(${crossScale}) translate(-35 -35)`}
-                filter="url(#act4-brand-shadow)"
               >
                 <path fill="#d4d4d4" d="M 25,0 L 45,0 L 45,25 L 70,25 L 70,45 L 45,45 L 45,70 L 25,70 L 25,45 L 0,45 L 0,25 L 25,25 Z" />
               </g>
@@ -2306,7 +2355,7 @@ const ActFour = ({frame}: {frame: number}) => {
 
           <g
             opacity={outroTagline}
-            transform={`translate(0 ${(1 - outroTagline) * 16})`}
+            transform={`translate(0 ${(1 - outroTagline) * 12})`}
             textAnchor="middle"
           >
             <text
@@ -2317,6 +2366,7 @@ const ActFour = ({frame}: {frame: number}) => {
               fontSize="31"
               fontWeight="800"
               letterSpacing="4.5"
+              filter="url(#act4-brand-shadow)"
             >
               EVERY MILESTONE. EVERY MEMORY.
             </text>
