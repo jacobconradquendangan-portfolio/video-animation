@@ -1127,7 +1127,6 @@ const BabyBookBookIcon = ({
  * ACT TWO — DIGITAL COMPANION ("02 / BABYBOOK+")
  * ============================================================================ */
 const ActTwo = ({frame}: {frame: number}) => {
-  const introduce = spring({frame, fps, config: {damping: 16, stiffness: 86, mass: 1.1}});
   const landing = 1 - ease(frame, cueFrame(1, 2), 32);
   const health = ease(frame, cueFrame(1, 3), 34);
   const reminders = ease(frame, cueFrame(1, 9), 28);
@@ -1142,7 +1141,63 @@ const ActTwo = ({frame}: {frame: number}) => {
   const chartDraw = sweep(frame, growthAt + 8, growthAt + 72);
   const sdgStart = cueFrame(1, 9) + 174;
   const sdg = ease(frame, sdgStart, 24);
-  const phoneY = (1 - introduce) * 80;
+  /* ============================================================================
+   * ACT 2 — NARRATION-SYNCED IMAGE SEQUENCE
+   * Each caption cue maps to one image from public/image/. Images crossfade at
+   * cue boundaries; enter babybook+ is the default.
+   * ============================================================================ */
+  const act2Images = [
+    { startSec: 0, endSec: 1.1, src: 'image/enter babybook+.jpg' },
+    { startSec: 1.25, endSec: 8.51, src: null },
+    { startSec: 8.71, endSec: 14.21, src: null },
+    { startSec: 14.41, endSec: 16.80, src: 'image/manage child profile.jpg' },
+    { startSec: 16.80, endSec: 18.45, src: 'image/log illnesses.jpg' },
+    { startSec: 18.45, endSec: 19.94, src: 'image/track allergies.jpg' },
+    { startSec: 20.1, endSec: 25.9, src: 'image/monitor who.jpg' },
+    { startSec: 25.9, endSec: 29.45, src: null },
+    { startSec: 29.45, endSec: 30.8, src: null },
+    { startSec: 30.8, endSec: 34.85, src: 'image/dedicated milestone.jpg' },
+    { startSec: 35.1, endSec: 42.03, src: 'image/upload photo memories.jpg' },
+    { startSec: 42.1, endSec: 52.83, src: 'image/automated checkup.jpg' },
+  ];
+
+  const nowSec = frame / fps;
+  let activeImage = act2Images[0].src;
+  let nextImage: string | null = null;
+  let crossProgress = 0;
+
+  let currentCueIndex = -1;
+  for (let i = 0; i < act2Images.length; i++) {
+    const cue = act2Images[i];
+    const nextCue = act2Images[i + 1];
+    if (nowSec >= cue.startSec && nowSec < (nextCue?.startSec ?? Infinity)) {
+      currentCueIndex = i;
+      break;
+    }
+    // Carry forward the last non-null image so null (hold) cues keep it.
+    if (cue.src) {
+      activeImage = cue.src;
+    }
+  }
+
+  if (currentCueIndex !== -1) {
+    const cue = act2Images[currentCueIndex];
+    const nextCue = act2Images[currentCueIndex + 1];
+    if (cue.src) {
+      activeImage = cue.src;
+      if (nextCue && nextCue.src && cue.src !== nextCue.src) {
+        const crossStart = Math.round(nextCue.startSec * fps) - 12;
+        const crossEnd = Math.round(nextCue.startSec * fps);
+        crossProgress = interpolate(frame, [crossStart, crossEnd], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+        if (frame >= crossStart && frame < crossEnd) {
+          nextImage = nextCue.src;
+        }
+      }
+    }
+  }
 
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
@@ -1213,122 +1268,29 @@ const ActTwo = ({frame}: {frame: number}) => {
           })}
         </g>
 
-        {/* Phone Frame Cutout */}
-        <g transform={`translate(1030 ${132 + phoneY}) rotate(2 300 335)`} filter="url(#act2-cutout-shadow)">
-          <rect x="42" y="0" width="460" height="710" rx="52" fill={K.night} />
-          <rect x="55" y="13" width="434" height="684" rx="44" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
-          <rect x="178" y="13" width="188" height="31" rx="15" fill={K.night} />
-          <BabyBookBookIcon x={75} y={35} scale={0.18} />
-          <text x="130" y="82" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
-            BABYBOOK+
-          </text>
-          <text x="91" y="129" fill={K.ink} fontFamily="Georgia, serif" fontSize="35" fontWeight="700">
-            Hi, Maya
-          </text>
-          <text x="93" y="159" fill="#6F7E81" fontFamily="Arial, sans-serif" fontSize="16">
-            Your little one is growing.
-          </text>
-
-          <g opacity={landing}>
-            <rect x="82" y="186" width="378" height="270" rx="16" fill="#DDE9E2" stroke={K.night} strokeWidth="2.5" />
-            <circle cx="145" cy="266" r="36" fill={K.gold} stroke={K.night} strokeWidth="2.5" />
-            <circle cx="145" cy="253" r="14" fill={K.paperLight} stroke={K.night} strokeWidth="2" />
-            <path d="M119 290q2-26 26-26t27 26" fill={K.blue} stroke={K.night} strokeWidth="2" />
-            <text x="202" y="238" fill={K.night} fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800" letterSpacing="2">
-              YOUR FAMILY ARCHIVE
-            </text>
-            <text x="202" y="275" fill={K.ink} fontFamily="Georgia, serif" fontSize="24" fontWeight="700">
-              Maya’s first year
-            </text>
-            <path d="M110 342h320M110 374h287M110 406h303" stroke="#94A3B8" strokeWidth="3" />
-            <circle cx="125" cy="430" r="7" fill={K.red} />
-            <circle cx="151" cy="430" r="7" fill={K.gold} />
-            <circle cx="177" cy="430" r="7" fill={K.green} />
-            <circle cx="203" cy="430" r="7" fill={K.blueLight} />
-          </g>
-
-          <g opacity={health}>
-            <rect x="82" y="186" width="378" height="211" rx="16" fill="#DDE9E2" stroke={K.night} strokeWidth="2.5" />
-            <text x="110" y="225" fill={K.night} fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800" letterSpacing="2">
-              GROWTH, OVER TIME
-            </text>
-            <text x="110" y="243" fill={K.blue} fontFamily="Georgia, serif" fontStyle="italic" fontSize="12">
-              WHO standard · sample data
-            </text>
-            <g opacity={weightReveal}>
-              <text x="110" y="263" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="11" fontWeight="700">
-                Weight
-              </text>
-              <text x="110" y="287" fill={K.ink} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
-                4.8 kg
-              </text>
-            </g>
-            <g opacity={heightReveal}>
-              <text x="225" y="263" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="11" fontWeight="700">
-                Height
-              </text>
-              <text x="225" y="287" fill={K.ink} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
-                57 cm
-              </text>
-            </g>
-            <g opacity={headReveal}>
-              <text x="338" y="256" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700">
-                Head
-              </text>
-              <text x="338" y="268" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700">
-                circumference
-              </text>
-              <text x="338" y="287" fill={K.ink} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
-                38 cm
-              </text>
-            </g>
-            <g transform="translate(109 292) scale(.7 .25)">
-              <GrowthLine progress={chartDraw} prefix="act2" />
-            </g>
-          </g>
-
-          <g opacity={health}>
-            <rect x="82" y="419" width="176" height="98" rx="14" fill="#F1D9BD" stroke={K.night} strokeWidth="2.5" />
-            <rect x="276" y="419" width="184" height="98" rx="14" fill="#E2E9DA" stroke={K.night} strokeWidth="2.5" />
-            <text x="103" y="461" fill={K.redDark} fontFamily="Georgia, serif" fontSize="25">
-              ♡
-            </text>
-            <text x="103" y="490" fill={K.ink} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800">
-              Health
-            </text>
-            <text x="300" y="461" fill={K.blue} fontFamily="Georgia, serif" fontSize="24">
-              ✳
-            </text>
-            <text x="300" y="490" fill={K.ink} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800">
-              Memories
-            </text>
-          </g>
-
-          <g opacity={nutrition}>
-            <rect x="82" y="540" width="378" height="107" rx="14" fill="#E6F0FA" stroke={K.night} strokeWidth="2.5" />
-            <circle cx="119" cy="580" r="13" fill={K.red} stroke={K.night} strokeWidth="2" />
-            <text x="145" y="580" fill={K.night} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="1">
-              DAILY NUTRITION
-            </text>
-            <text x="109" y="616" fill={K.ink} fontFamily="Arial, sans-serif" fontSize="17" fontWeight="700">
-              2 meals logged today
-            </text>
-            <circle cx="408" cy="589" r="15" fill={K.green} stroke={K.night} strokeWidth="2" />
-            <path d="m401 589 5 5 10-11" fill="none" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          </g>
-
-          <g opacity={reminders}>
-            <rect x="82" y="540" width="378" height="107" rx="14" fill={K.night} />
-            <circle cx="119" cy="580" r="12" fill={K.gold} />
-            <path d="M119 573v8l6 4" fill="none" stroke={K.night} strokeWidth="2.5" />
-            <text x="145" y="582" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="700">
-              Checkup coming up
-            </text>
-            <text x="109" y="617" fill="#B9C9C6" fontFamily="Arial, sans-serif" fontSize="14">
-              A gentle reminder, right on time.
-            </text>
-          </g>
-        </g>
+        {/* Narration-synced images — replaces the mobile phone */}
+        <image
+          key="act2-active-image"
+          x={1000}
+          y={100}
+          width={520}
+          height={720}
+          href={staticFile(activeImage ?? 'image/enter babybook+.jpg')}
+          preserveAspectRatio="xMidYMid slice"
+          style={{opacity: 1 - crossProgress}}
+        />
+        {nextImage && (
+          <image
+            key="act2-next-image"
+            x={1000}
+            y={100}
+            width={520}
+            height={720}
+            href={staticFile(nextImage)}
+            preserveAspectRatio="xMidYMid slice"
+            style={{opacity: crossProgress}}
+          />
+        )}
 
         {/* SDG 3 Editorial Stamp Badge */}
         <g opacity={sdg} transform={`translate(${interpolate(sdg, [0, 1], [28, 0])} 0)`} filter="url(#act2-cutout-shadow)">
