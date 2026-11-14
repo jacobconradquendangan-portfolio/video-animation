@@ -2646,17 +2646,17 @@ const ActScene = ({actIndex}: {actIndex: number}) => {
         }}
       >
         <Scene frame={frame} />
+        <PremiumFinish />
+        <EditorialChrome
+          frame={frame}
+          actIndex={actIndex}
+          actFrames={actFrames}
+          totalFrames={durationInFrames}
+        />
+        <StoryCaption actIndex={actIndex} />
       </div>
 
-      <PremiumFinish />
       <PaperWipe frame={frame} index={act.id} label={act.title} />
-      <EditorialChrome
-        frame={frame}
-        actIndex={actIndex}
-        actFrames={actFrames}
-        totalFrames={durationInFrames}
-      />
-      <StoryCaption actIndex={actIndex} />
     </AbsoluteFill>
   );
 };
