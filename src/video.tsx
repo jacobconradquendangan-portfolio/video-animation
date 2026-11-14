@@ -1297,10 +1297,10 @@ const ActTwo = ({frame}: {frame: number}) => {
         {/* Narration-synced images */}
         <image
           key="act2-active-image"
-          x={990}
-          y={30}
-          width={600}
-          height={920}
+          x={970}
+          y={-10}
+          width={640}
+          height={960}
           href={staticFile(activeImage ?? 'image/enter babybook+.png')}
           preserveAspectRatio="xMidYMid meet"
           style={{
@@ -1312,10 +1312,10 @@ const ActTwo = ({frame}: {frame: number}) => {
         {nextImage && (
           <image
             key="act2-next-image"
-            x={990}
-            y={30}
-            width={600}
-            height={920}
+            x={970}
+            y={-10}
+            width={640}
+            height={960}
             href={staticFile(nextImage)}
             preserveAspectRatio="xMidYMid meet"
             style={{
