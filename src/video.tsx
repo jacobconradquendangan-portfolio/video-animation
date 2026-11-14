@@ -2146,9 +2146,6 @@ const ActFour = ({frame}: {frame: number}) => {
   const outroFooter = ease(frame, logoStart + 56, 26);
   const outroCredits = ease(frame, logoStart + 62, 26);
   const outroFloat = floatY(frame, 0.02, 3) * outro;
-  const ciitFloat = floatY(frame, 0.03, 6) * outro;
-  const ciitRotate = Math.sin(frame * 0.015) * 1.5 * outro;
-  const ciitScale = 1 + Math.sin(frame * 0.02) * 0.03 * outro;
 
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
@@ -2313,11 +2310,11 @@ const ActFour = ({frame}: {frame: number}) => {
           <rect x="0" y="0" width="1920" height="2" fill="#FFFFFF" opacity={0.4} />
           {/* Inner bevel shadow bottom edge */}
           <rect x="0" y="1078" width="1920" height="2" fill="#16283A" opacity={0.12} />
-          {/* CIIT partner logo — vox-style motion above BabyBook+ */}
+          {/* CIIT partner logo */}
           <g
             opacity={outro}
             filter="url(#act4-brand-shadow)"
-            transform={`translate(960 ${260 + ciitFloat}) rotate(${ciitRotate}) scale(${ciitScale})`}
+            transform="translate(960 260)"
           >
             <image
               href={staticFile('image/CIIT_Logo_Full_Color_HighRes.png')}
