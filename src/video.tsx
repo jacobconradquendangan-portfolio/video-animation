@@ -3,6 +3,7 @@ import {
   AbsoluteFill,
   Audio,
   Composition,
+  Easing,
   interpolate,
   Sequence,
   spring,
@@ -13,16 +14,16 @@ import {
 import {actFrames, acts, durationInFrames} from './script';
 
 const K = {
-  night: '#111827',
+  night: '#23415A',
   blue: '#4A90E2',
   blueLight: '#87BCEB',
   paper: '#F3F6F9',
   paperLight: '#F8F9FA',
   paperShade: '#D7DEE7',
-  ink: '#111111',
+  ink: '#23415A',
   red: '#FF8DA1',
-  redDark: '#D96A81',
-  gold: '#EDB85E',
+  redDark: '#B83D65',
+  gold: '#87BCEB',
   green: '#86A989',
   sky: '#B9D7D1',
   lilac: '#AAA1C3',
@@ -57,7 +58,7 @@ const VoxDefs = ({prefix}: {prefix: string}) => (
 
     {/* Zero-blur editorial cardboard cutout shadow */}
     <filter id={`${prefix}-cutout-shadow`} x="-15%" y="-15%" width="135%" height="135%">
-      <feDropShadow dx="6" dy="8" stdDeviation="0" floodColor="#111827" floodOpacity="0.22" />
+      <feDropShadow dx="6" dy="8" stdDeviation="0" floodColor={K.night} floodOpacity="0.22" />
     </filter>
 
     {/* Subtle newsprint grain */}
@@ -80,12 +81,12 @@ const VoxDefs = ({prefix}: {prefix: string}) => (
 
     {/* Newsprint halftone dot pattern */}
     <pattern id={`${prefix}-halftone`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
-      <circle cx="2.5" cy="2.5" r="1.2" fill="#111827" opacity="0.14" />
+      <circle cx="2.5" cy="2.5" r="1.2" fill={K.night} opacity="0.14" />
     </pattern>
 
     {/* Diagonal crosshatch shading */}
     <pattern id={`${prefix}-hatch`} width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
-      <line x1="0" y1="0" x2="0" y2="9" stroke="#111827" strokeWidth="1.4" opacity="0.16" />
+      <line x1="0" y1="0" x2="0" y2="9" stroke={K.night} strokeWidth="1.4" opacity="0.16" />
     </pattern>
 
     {/* Ruled notebook background lines */}
@@ -120,13 +121,13 @@ const MaskingTape = ({
       height={height}
       fill={color}
       opacity="0.88"
-      stroke="#111827"
+      stroke={K.night}
       strokeWidth="1"
       strokeOpacity="0.35"
       filter={`url(#${prefix}-ink-bleed)`}
     />
-    <line x1="3" y1="0" x2="3" y2={height} stroke="#111827" strokeWidth="1" strokeDasharray="3 2" opacity="0.35" />
-    <line x1={width - 3} y1="0" x2={width - 3} y2={height} stroke="#111827" strokeWidth="1" strokeDasharray="3 2" opacity="0.35" />
+    <line x1="3" y1="0" x2="3" y2={height} stroke={K.night} strokeWidth="1" strokeDasharray="3 2" opacity="0.35" />
+    <line x1={width - 3} y1="0" x2={width - 3} y2={height} stroke={K.night} strokeWidth="1" strokeDasharray="3 2" opacity="0.35" />
   </g>
 );
 
@@ -150,7 +151,7 @@ const ParentAndChild = ({
 }) => (
   <g transform={`translate(${x} ${y}) scale(${scale})`}>
     {/* Halftone Ground Shadow */}
-    <ellipse cx="95" cy="253" rx="112" ry="14" fill="#111827" opacity="0.14" />
+    <ellipse cx="95" cy="253" rx="112" ry="14" fill={K.night} opacity="0.14" />
     <ellipse cx="93" cy="251" rx="110" ry="13" fill={`url(#${prefix}-halftone)`} />
 
     {/* Screenprint Offset Fill Layer */}
@@ -716,7 +717,7 @@ const ActOne = ({frame}: {frame: number}) => {
          * =================================================================== */}
         <g opacity={titleReveal} transform={`translate(110 ${195 + (1 - titleReveal) * 18})`}>
           {/* Dark Navy Editorial Pill Badge */}
-          <rect x="0" y="0" width="445" height="48" rx="6" fill="#232B35" filter="url(#act1-cutout-shadow)" />
+          <rect x="0" y="0" width="445" height="48" rx="6" fill={K.night} filter="url(#act1-cutout-shadow)" />
           <text
             x="22"
             y="32"
@@ -1048,6 +1049,55 @@ const ActOne = ({frame}: {frame: number}) => {
   );
 };
 
+const BabyBookBookIcon = ({
+  x,
+  y,
+  scale,
+  drawProgress = 1,
+  pageProgress = 1,
+}: {
+  x: number;
+  y: number;
+  scale: number;
+  drawProgress?: number;
+  pageProgress?: number;
+}) => (
+  <g transform={`translate(${x} ${y}) scale(${scale})`}>
+    <g transform="translate(60 140)">
+      <path
+        d="M 10,15 Q 60,-5 110,15 L 110,110 Q 60,90 10,110 Z"
+        fill="none"
+        stroke="#9cbdd8"
+        strokeWidth="8"
+        strokeDasharray="1200"
+        strokeDashoffset={1200 * (1 - drawProgress)}
+      />
+      <path
+        d="M 110,15 Q 160,-5 210,15 L 210,110 Q 160,90 110,110 Z"
+        fill="none"
+        stroke="#9cbdd8"
+        strokeWidth="8"
+        strokeDasharray="1200"
+        strokeDashoffset={1200 * (1 - drawProgress)}
+      />
+      <g opacity={pageProgress} transform={`translate(0 ${10 * (1 - pageProgress)})`}>
+        <path d="M 20,25 Q 60,10 105,25 L 105,100 Q 60,85 20,100 Z" fill="#ffffff" stroke="#9cbdd8" strokeWidth="6" />
+        <path d="M 115,25 Q 160,10 200,25 L 200,100 Q 160,85 115,100 Z" fill="#ffffff" stroke="#9cbdd8" strokeWidth="6" />
+        <g fill="none" stroke="#9cbdd8" strokeWidth="5">
+          <path d="M 35,45 L 90,45" />
+          <path d="M 35,60 L 90,60" />
+          <path d="M 35,75 L 90,75" />
+          <path d="M 35,90 L 90,90" />
+          <path d="M 130,45 L 185,45" />
+          <path d="M 130,60 L 185,60" />
+          <path d="M 130,75 L 185,75" />
+          <path d="M 130,90 L 185,90" />
+        </g>
+      </g>
+    </g>
+  </g>
+);
+
 /* ============================================================================
  * ACT TWO — DIGITAL COMPANION ("02 / BABYBOOK+")
  * ============================================================================ */
@@ -1088,7 +1138,7 @@ const ActTwo = ({frame}: {frame: number}) => {
 
         {/* Editorial Section Badge & Highlighter Headline */}
         <g transform="translate(110 124)">
-          <rect x="0" y="0" width="320" height="44" rx="6" fill="#232B35" filter="url(#act2-cutout-shadow)" />
+          <rect x="0" y="0" width="320" height="44" rx="6" fill={K.night} filter="url(#act2-cutout-shadow)" />
           <text x="20" y="29" fill="#F8F9FA" fontSize="22" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="2">
             <tspan fill={K.blueLight}>02 / </tspan>
             BABYBOOK+
@@ -1098,14 +1148,14 @@ const ActTwo = ({frame}: {frame: number}) => {
             <rect
               x="0"
               y="0"
-              width={480 * titleSwipe}
+              width={860 * titleSwipe}
               height="82"
               fill={K.gold}
               opacity="0.86"
               filter="url(#act2-ink-bleed)"
             />
           </g>
-          <text x="4" y="136" fill="#1D242B" fontSize="82" fontFamily="Georgia, serif" fontWeight="700" letterSpacing="-1.5">
+          <text x="4" y="136" fill={K.ink} fontSize="82" fontFamily="Georgia, serif" fontWeight="700" letterSpacing="-1.5">
             Health has a history.
           </text>
           <rect x="4" y="168" width="560" height="40" rx="4" fill="#64748B" />
@@ -1172,7 +1222,8 @@ const ActTwo = ({frame}: {frame: number}) => {
           <rect x="42" y="0" width="460" height="710" rx="52" fill={K.night} />
           <rect x="55" y="13" width="434" height="684" rx="44" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
           <rect x="178" y="13" width="188" height="31" rx="15" fill={K.night} />
-          <text x="91" y="82" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
+          <BabyBookBookIcon x={75} y={35} scale={0.18} />
+          <text x="130" y="82" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
             BABYBOOK+
           </text>
           <text x="91" y="129" fill={K.ink} fontFamily="Georgia, serif" fontSize="35" fontWeight="700">
@@ -1332,6 +1383,9 @@ const ActThree = ({frame}: {frame: number}) => {
   const scanFlow = ease(frame, scanStart, 20);
   const revokeFlow = ease(frame, revokeStart, 18);
   const flowDashOffset = (progress: number) => 48 * (1 - progress);
+  const doctor = ease(frame, 0, 24) * (1 - ease(frame, selectionStart - 12, 12));
+  const doctorBob = Math.sin(frame * 0.08) * 2;
+  const parentX = interpolate(ease(frame, selectionStart - 24, 24), [0, 1], [170, -60]);
 
   // Kinetic Typography & Editorial Motion Enhancements
   const titleReveal = ease(frame, 4, 18);
@@ -1364,16 +1418,16 @@ const ActThree = ({frame}: {frame: number}) => {
 
           {/* Zero-blur editorial cardboard cutout shadow */}
           <filter id="act3-cutout-shadow" x="-15%" y="-15%" width="135%" height="135%">
-            <feDropShadow dx="7" dy="9" stdDeviation="0" floodColor="#090D16" floodOpacity="0.42" />
+            <feDropShadow dx="7" dy="9" stdDeviation="0" floodColor={K.night} floodOpacity="0.42" />
           </filter>
 
           {/* Newsprint halftone dot pattern */}
           <pattern id="act3-halftone" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
-            <circle cx="2.5" cy="2.5" r="1.2" fill="#111827" opacity="0.14" />
+            <circle cx="2.5" cy="2.5" r="1.2" fill={K.night} opacity="0.14" />
           </pattern>
 
           <pattern id="act3-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
-            <line x1="0" y1="0" x2="0" y2="9" stroke="#111827" strokeWidth="1.4" opacity="0.16" />
+            <line x1="0" y1="0" x2="0" y2="9" stroke={K.night} strokeWidth="1.4" opacity="0.16" />
           </pattern>
 
           <pattern id="act3-ruled-paper" width="100" height="38" patternUnits="userSpaceOnUse">
@@ -1398,7 +1452,7 @@ const ActThree = ({frame}: {frame: number}) => {
          * =================================================================== */}
         <g opacity={titleReveal} transform={`translate(108 ${96 + (1 - titleReveal) * 16})`}>
           {/* Dark editorial section badge */}
-          <rect x="0" y="0" width="465" height="44" rx="6" fill="#232B35" filter="url(#act3-cutout-shadow)" />
+          <rect x="0" y="0" width="465" height="44" rx="6" fill={K.night} filter="url(#act3-cutout-shadow)" />
           <text
             x="18"
             y="29"
@@ -1436,11 +1490,86 @@ const ActThree = ({frame}: {frame: number}) => {
         {/* ===================================================================
          * PARENT & CHILD CHARACTER (With Vox Print Offset & Ink Contours)
          * =================================================================== */}
-        <g transform="translate(-60 282)">
-          <circle cx="280" cy="298" r="164" fill="#EAF1F7" />
+        <g transform={`translate(${parentX} 282)`} filter="url(#act3-cutout-shadow)">
+          <circle cx="280" cy="298" r="164" fill="#E4EFFA" stroke={K.night} strokeWidth="2.5" />
+          <circle cx="280" cy="298" r="164" fill="url(#act3-halftone)" opacity="0.28" />
           <g transform={`translate(168 ${112 + Math.sin(frame * 0.08) * 3})`}>
             <ParentAndChild x={0} y={0} scale={1.12} coat={K.red} childCoat={K.gold} prefix="act3" />
           </g>
+        </g>
+
+        {/* Pediatrician joins the conversation before the QR viewer appears. */}
+        <g
+          opacity={doctor}
+          transform={`translate(760 ${405 + doctorBob})`}
+          filter="url(#act3-cutout-shadow)"
+        >
+          <circle cx="130" cy="175" r="164" fill="#E4EFFA" stroke={K.night} strokeWidth="2.5" />
+          <circle cx="130" cy="175" r="164" fill="url(#act3-halftone)" opacity="0.28" />
+
+          <g transform="translate(130 175) scale(1.04) translate(-130 -175)">
+          <path
+            d="M88 143 70 158Q50 178 47 272Q130 300 213 272Q210 178 190 158L171 143 150 165 130 153 109 165Z"
+            fill={K.paperLight}
+            stroke={K.night}
+            strokeWidth="4"
+            strokeLinejoin="round"
+          />
+          <path d="M109 145 130 167 151 145 141 194 130 208 119 194Z" fill="#E4EFFA" stroke={K.night} strokeWidth="3" />
+          <path d="M88 146 67 177 89 190 107 164M171 146 193 177 170 190 151 164" fill="none" stroke={K.night} strokeWidth="3" />
+
+          <path d="M91 96Q87 44 130 42Q174 45 169 99L157 88Q137 72 117 82Q102 88 91 108Z" fill={K.night} />
+          <circle cx="130" cy="96" r="40" fill="#F1D7C8" stroke={K.night} strokeWidth="3.5" />
+          <path d="M92 93Q92 49 130 49Q163 49 169 83L155 76Q133 66 115 79Q102 86 92 105Z" fill={K.night} />
+          <circle cx="116" cy="97" r="3" fill={K.night} />
+          <circle cx="143" cy="97" r="3" fill={K.night} />
+          <path d="M120 116Q130 124 141 115" fill="none" stroke={K.night} strokeWidth="3" strokeLinecap="round" />
+
+          <path d="M107 167V219Q107 244 130 244Q153 244 153 219V183" fill="none" stroke={K.blue} strokeWidth="5" strokeLinecap="round" />
+          <circle cx="153" cy="183" r="7" fill={K.red} stroke={K.night} strokeWidth="2" />
+          <rect x="163" y="207" width="31" height="43" rx="3" fill="#FFFCF5" stroke={K.blue} strokeWidth="2.5" />
+          <path d="M169 219h18M169 227h18M169 235h13" stroke={K.blue} strokeWidth="2" strokeLinecap="round" />
+          </g>
+
+          <g transform="translate(166 18)">
+            <path
+              d="M12 0H147Q159 0 159 12V48Q159 60 147 60H60L38 78 42 60H12Q0 60 0 48V12Q0 0 12 0Z"
+              fill={K.paperLight}
+              stroke={K.blue}
+              strokeWidth="3"
+              strokeLinejoin="round"
+            />
+            {[0, 1, 2].map((dot) => (
+              <circle
+                key={dot}
+                cx={57 + dot * 24}
+                cy="30"
+                r="5"
+                fill={K.blue}
+                opacity={0.35 + 0.65 * ((Math.sin(frame * 0.16 + dot * 2) + 1) / 2)}
+              />
+            ))}
+          </g>
+        </g>
+
+        <g opacity={doctor} transform={`translate(${parentX + 386} 408)`}>
+          <path
+            d="M12 0H158Q170 0 170 12V44Q170 56 158 56H48L28 73 32 56H12Q0 56 0 44V12Q0 0 12 0Z"
+            fill={K.paperLight}
+            stroke={K.redDark}
+            strokeWidth="3"
+            strokeLinejoin="round"
+          />
+          {[0, 1, 2].map((dot) => (
+            <circle
+              key={dot}
+              cx={61 + dot * 24}
+              cy="28"
+              r="4.5"
+              fill={K.redDark}
+              opacity={0.35 + 0.65 * ((Math.sin(frame * 0.16 + dot * 2 + Math.PI) + 1) / 2)}
+            />
+          ))}
         </g>
 
         {/* Cue-driven broken-line steps: share, QR, clinician, revoke-to-clinic, audit. */}
@@ -1456,7 +1585,7 @@ const ActThree = ({frame}: {frame: number}) => {
             opacity={qrFlow * (1 - revokeShatter)}
           />
           <path
-            d="M1244 535 C1324 525 1380 540 1465 540"
+            d="M1244 535 C1320 525 1375 540 1456 540"
             strokeDashoffset={flowDashOffset(scanFlow)}
             opacity={scanFlow * (1 - revokeShatter)}
           />
@@ -1466,12 +1595,12 @@ const ActThree = ({frame}: {frame: number}) => {
             opacity={revokeFlow}
           />
           <path
-            d="M1112 690 C1240 682 1360 675 1465 700"
+            d="M1112 690 C1235 682 1352 675 1456 700"
             strokeDashoffset={flowDashOffset(revokeClinicFlow)}
             opacity={revokeClinicFlow}
           />
           <path
-            d="M1465 540 C1360 515 1270 500 1179 510"
+            d="M1456 540 C1355 515 1260 500 1179 510"
             strokeDashoffset={flowDashOffset(audit)}
             opacity={audit}
           />
@@ -1479,7 +1608,7 @@ const ActThree = ({frame}: {frame: number}) => {
 
         {/* Editorial Divider & Clinician Zone Label */}
         <path d="M1340 315 V775" stroke={K.blue} strokeWidth="2.5" strokeDasharray="6 12" opacity="0.4" />
-        <g transform="translate(1385 292)" filter="url(#act3-cutout-shadow)">
+        <g transform="translate(1518 292)" filter="url(#act3-cutout-shadow)">
           <rect x="0" y="0" width="225" height="32" fill="#E4EFFA" stroke={K.blue} strokeWidth="2" />
           <text
             x="112"
@@ -1491,7 +1620,7 @@ const ActThree = ({frame}: {frame: number}) => {
             fontWeight="800"
             letterSpacing="2.2"
           >
-            CLINICIAN VIEW
+            DOCTOR VIEW
           </text>
         </g>
 
@@ -1637,7 +1766,7 @@ const ActThree = ({frame}: {frame: number}) => {
         {/* ===================================================================
          * 3. CLINICIAN VIEW-ONLY DOSSIER CARD (And Revoked Stamp State)
          * =================================================================== */}
-        <g opacity={viewer} transform={`translate(${interpolate(scan, [0, 1], [1820, 1465])} 346)`} filter="url(#act3-cutout-shadow)">
+        <g opacity={viewer} transform={`translate(${interpolate(scan, [0, 1], [1820, 1456])} 346)`} filter="url(#act3-cutout-shadow)">
           <rect x="0" y="0" width="348" height="390" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
           <rect x="0" y="0" width="348" height="390" fill="url(#act3-halftone)" opacity="0.22" />
 
@@ -1681,7 +1810,7 @@ const ActThree = ({frame}: {frame: number}) => {
         </g>
 
         {/* Revoked Access Lockout Card */}
-        <g opacity={viewEnded} transform="translate(1465 346)" filter="url(#act3-cutout-shadow)">
+        <g opacity={viewEnded} transform="translate(1456 346)" filter="url(#act3-cutout-shadow)">
           <rect x="0" y="0" width="348" height="390" fill="#E4EFFA" stroke={K.blue} strokeWidth="3.5" />
           <rect x="0" y="0" width="348" height="390" fill="url(#act3-halftone)" opacity="0.2" />
 
@@ -1765,16 +1894,66 @@ const ActFour = ({frame}: {frame: number}) => {
   const finish = ease(frame, cueFrame(3, 3), 35);
   const collageStart = cueFrame(3, 1);
   const collage = ease(frame, collageStart, 24);
-  const collageScroll = interpolate(frame, [collageStart, collageStart + 240], [0, 96], {
+  const collageScroll = interpolate(frame, [collageStart, collageStart + 240], [0, 24], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const outro = ease(frame, actFrames[3] - 72, 36);
+  const finalCaptionEnd = acts[3].captions[acts[3].captions.length - 1].end;
+  const outroStart = Math.round(finalCaptionEnd * fps);
+  const logoStart = outroStart + 2 * fps;
+  const outro = ease(frame, outroStart, 36);
+  const logoBounceEase = Easing.bezier(0.175, 0.885, 0.32, 1.275);
+  const bookDraw = interpolate(frame, [logoStart + 3, logoStart + 48], [0, 1], {
+    easing: Easing.bezier(0.42, 0, 0.58, 1),
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const pagesReveal = Math.min(
+    1,
+    interpolate(frame, [logoStart + 12, logoStart + 30], [0, 1], {
+      easing: logoBounceEase,
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    }),
+  );
+  const babyY = interpolate(frame, [logoStart + 27, logoStart + 41.4, logoStart + 51], [-50, 10, 0], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const bookY = interpolate(frame, [logoStart + 36, logoStart + 50.4, logoStart + 60], [-50, 10, 0], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const crossScale = interpolate(frame, [logoStart + 48, logoStart + 64.8, logoStart + 72], [0, 1.1, 1], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const crossRotation = interpolate(frame, [logoStart + 48, logoStart + 64.8, logoStart + 72], [-90, 10, 0], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const babyReveal = interpolate(frame, [logoStart + 27, logoStart + 41.4, logoStart + 51], [0, 1, 1], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const bookReveal = interpolate(frame, [logoStart + 36, logoStart + 50.4, logoStart + 60], [0, 1, 1], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const crossReveal = interpolate(frame, [logoStart + 48, logoStart + 64.8, logoStart + 72], [0, 1, 1], {
+    easing: logoBounceEase,
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
   const bridgeNodes = [
     [631, 563],
-    [797, 481],
     [970, 526],
-    [1132, 626],
     [1293, 644],
   ];
   const titleSwipe = sweep(frame, 6, 26);
@@ -1792,26 +1971,35 @@ const ActFour = ({frame}: {frame: number}) => {
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
         <VoxDefs prefix="act4" />
         <defs>
+          <filter id="act4-brand-shadow" x="-10%" y="-20%" width="120%" height="150%">
+            <feDropShadow dx="3" dy="6" stdDeviation="3" floodColor="#9CA3AF" floodOpacity="0.6" />
+          </filter>
           <clipPath id="act-four-memory-strip">
             <rect x="662" y="382" width="562" height="64" rx="5" />
           </clipPath>
         </defs>
 
         <rect x="0" y="0" width="1920" height="1080" fill="url(#act4-ruled-paper)" />
-        <circle cx="959" cy="475" r="345" fill="url(#act4-halftone)" opacity="0.55" />
+        <circle cx="959" cy="475" r="310" fill="url(#act4-halftone)" opacity="0.28" />
         <path d="M0 845 Q440 818 900 842 T1920 835 V1080 H0 Z" fill="#EFE8DA" />
         <line x1="0" y1="842" x2="1920" y2="838" stroke="#D2C6B2" strokeWidth="2.5" />
 
         {/* Editorial Badge & Display Headline */}
         <g transform="translate(108 106)">
-          <rect x="0" y="0" width="490" height="44" rx="6" fill="#232B35" filter="url(#act4-cutout-shadow)" />
+          <rect x="0" y="0" width="580" height="44" rx="6" fill={K.night} filter="url(#act4-cutout-shadow)" />
           <text x="18" y="30" fill="#F8F9FA" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="800" letterSpacing="2">
             <tspan fill={K.gold}>04 / </tspan>
             THE WHOLE STORY, HELD TOGETHER
           </text>
 
           <g transform="translate(-12 68) rotate(-1.5)">
-            <rect x="0" y="0" width={455 * titleSwipe} height="80" fill={K.red} opacity="0.72" filter="url(#act4-ink-bleed)" />
+            <path
+              d="M4 8 Q445 2 900 6 L910 78 Q455 82 8 74 Z"
+              fill={K.red}
+              opacity="0.78"
+              filter="url(#act4-ink-bleed)"
+              style={{clipPath: `inset(0 ${(1 - titleSwipe) * 100}% 0 0)`}}
+            />
           </g>
           <text x="0" y="136" fill={K.ink} fontFamily="Georgia, serif" fontSize="78" fontWeight="700" letterSpacing="-1.5">
             Memory and medicine.
@@ -1858,7 +2046,7 @@ const ActFour = ({frame}: {frame: number}) => {
           <TinyMemory x={37} y={98} rotate={0} color="#DFB46F" kind={0} prefix="act4" />
           <path d="M254 82h140M254 116h130M254 150h145" stroke="#94A3B8" strokeWidth="3" />
           <path d="M254 210q30-38 60 0t60 0" fill="none" stroke={K.redDark} strokeWidth="5" filter="url(#act4-ink-bleed)" />
-          <text x="254" y="262" fill={K.night} fontFamily="Georgia, serif" fontSize="17" fontStyle="italic" fontWeight="700">
+          <text x="230" y="262" fill={K.night} fontFamily="Georgia, serif" fontSize="15" fontStyle="italic" fontWeight="700">
             First steps, first words...
           </text>
         </g>
@@ -1892,8 +2080,8 @@ const ActFour = ({frame}: {frame: number}) => {
         <g opacity={collage} filter="url(#act4-cutout-shadow)">
           <rect x="650" y="372" width="590" height="82" fill="#FFFCF5" stroke={K.night} strokeWidth="2.5" />
           <g clipPath="url(#act-four-memory-strip)">
-            <g transform={`translate(${671 - collageScroll} 384) scale(.31)`}>
-              {Array.from({length: 8}, (_, i) => (
+            <g transform={`translate(${690 - collageScroll} 384) scale(.34)`}>
+              {Array.from({length: 6}, (_, i) => (
                 <TinyMemory
                   key={i}
                   x={i * 246}
@@ -1913,7 +2101,7 @@ const ActFour = ({frame}: {frame: number}) => {
           d="M562 630C711 470 820 443 970 526S1193 717 1372 607"
           fill="none"
           stroke={K.paperLight}
-          strokeWidth="23"
+          strokeWidth="15"
           strokeLinecap="round"
           opacity="0.7"
         />
@@ -1921,7 +2109,7 @@ const ActFour = ({frame}: {frame: number}) => {
           d="M562 630C711 470 820 443 970 526S1193 717 1372 607"
           fill="none"
           stroke={K.redDark}
-          strokeWidth="7"
+          strokeWidth="5.5"
           strokeLinecap="round"
           pathLength="1"
           strokeDasharray="1"
@@ -1930,8 +2118,8 @@ const ActFour = ({frame}: {frame: number}) => {
         />
         {bridgeNodes.map(([x, y], i) => (
           <g key={i} opacity={ease(frame, cueFrame(3, 1) + i * 13, 14)}>
-            <circle cx={x} cy={y} r="19" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
-            <path d="M-5 0h10M0-5v10" transform={`translate(${x} ${y})`} stroke={K.redDark} strokeWidth="3" strokeLinecap="round" />
+            <circle cx={x} cy={y} r="15" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
+            <path d="M-4 0h8M0-4v8" transform={`translate(${x} ${y})`} stroke={K.redDark} strokeWidth="2.5" strokeLinecap="round" />
           </g>
         ))}
 
@@ -1940,26 +2128,61 @@ const ActFour = ({frame}: {frame: number}) => {
         </g>
 
         <g opacity={finish} transform={`translate(0 ${interpolate(finish, [0, 1], [28, 0])})`}>
-          <text x="960" y="316" textAnchor="middle" fill={K.night} fontFamily="Georgia, serif" fontSize="34" fontWeight="700">
+          <text x="960" y="296" textAnchor="middle" fill={K.night} fontFamily="Georgia, serif" fontSize="32" fontWeight="700">
             One story. Across a lifetime.
           </text>
-          <path d="M805 338h310" stroke={K.redDark} strokeWidth="5" strokeLinecap="round" filter="url(#act4-ink-bleed)" />
         </g>
 
         {/* Outro Card */}
         <g opacity={outro}>
           <rect x="0" y="0" width="1920" height="1080" fill="#F9F6F0" />
           <rect x="0" y="0" width="1920" height="1080" fill="url(#act4-ruled-paper)" />
-          <circle cx="803" cy="522" r="39" fill={K.blue} stroke={K.night} strokeWidth="4" />
-          <text x="803" y="532" textAnchor="middle" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="24" fontWeight="800">
-            B+
-          </text>
-          <text x="860" y="540" fill={K.ink} fontFamily="Georgia, serif" fontSize="52" fontWeight="700">
-            BabyBook+
-          </text>
+          <g transform="translate(592.5 392.5) scale(0.7)">
+            <BabyBookBookIcon x={0} y={0} scale={1} drawProgress={bookDraw} pageProgress={pagesReveal} />
+            <g opacity={babyReveal} transform={`translate(0 ${babyY})`} filter="url(#act4-brand-shadow)">
+              <text
+                x="280"
+                y="250"
+                textLength="300"
+                lengthAdjust="spacingAndGlyphs"
+                fill="#8cd3fa"
+                fontFamily="'Arial Rounded MT Bold', Nunito, Arial, sans-serif"
+                fontWeight="900"
+                fontSize="140"
+              >
+                baby
+              </text>
+            </g>
+            <g opacity={bookReveal} transform={`translate(0 ${bookY})`} filter="url(#act4-brand-shadow)">
+              <text
+                x="580"
+                y="250"
+                textLength="300"
+                lengthAdjust="spacingAndGlyphs"
+                fill="#f9c4d2"
+                fontFamily="'Arial Rounded MT Bold', Nunito, Arial, sans-serif"
+                fontWeight="900"
+                fontSize="140"
+              >
+                book
+              </text>
+            </g>
+            <g transform="translate(890 120)">
+              <g
+                opacity={crossReveal}
+                transform={`translate(35 35) rotate(${crossRotation}) scale(${crossScale}) translate(-35 -35)`}
+                filter="url(#act4-brand-shadow)"
+              >
+                <path fill="#d4d4d4" d="M 25,0 L 45,0 L 45,25 L 70,25 L 70,45 L 45,45 L 45,70 L 25,70 L 25,45 L 0,45 L 0,25 L 25,25 Z" />
+              </g>
+            </g>
+          </g>
           <path d="M762 582h396" stroke={K.redDark} strokeWidth="5" strokeLinecap="round" filter="url(#act4-ink-bleed)" />
         </g>
       </svg>
+      <Sequence from={logoStart} durationInFrames={66}>
+        <Audio src={staticFile('audio/act-04-logo-sfx.wav')} volume={0.45} />
+      </Sequence>
     </AbsoluteFill>
   );
 };
@@ -2042,14 +2265,15 @@ const Video = () => (
   <AbsoluteFill style={{backgroundColor: K.night}}>
     {acts.map((act, index) => {
       const from = actFrames.slice(0, index).reduce((sum, length) => sum + length, 0);
+      const scoreVolume = {'01': 0.21, '02': 0.25, '03': 0.19, '04': 0.28}[act.id] ?? 0.22;
       return (
         <Sequence key={act.id} from={from} durationInFrames={actFrames[index]} name={act.title}>
           <ActScene actIndex={index} />
           <Audio src={staticFile(act.audio)} volume={1} />
+          <Audio src={staticFile(`audio/act-${act.id}-score.wav`)} volume={scoreVolume} />
         </Sequence>
       );
     })}
-    <Audio src={staticFile('audio/soft-score.wav')} volume={0.46} />
   </AbsoluteFill>
 );
 
