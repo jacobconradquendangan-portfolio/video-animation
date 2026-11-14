@@ -91,26 +91,89 @@ const Notebook = ({frame, openAt, memoryAt, fragileAt}: {frame: number; openAt: 
     config: {damping: 13, stiffness: 125, mass: .8},
   });
   const fragile = ease(frame, fragileAt, 20);
+  const writing = ease(frame, openAt + 12, 24);
+  const growthReveal = ease(frame, openAt + 26, 42);
   const pageLift = (1 - opening) * 55;
   return (
     <g transform={`translate(685 245) scale(1.08) rotate(-4 340 260)`}>
+      <defs>
+        <clipPath id="baby-book-left-page">
+          <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" />
+        </clipPath>
+        <clipPath id="baby-book-right-page">
+          <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" />
+        </clipPath>
+      </defs>
       <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" fill="#B7966B" />
       <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#B7966B" transform="translate(8 8)" />
       <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#FFFCF5" stroke="#D9C6A7" strokeWidth="2" />
       <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#F4EBD8" transform={`translate(0 ${pageLift})`} />
       <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" fill="#FFFCF5" stroke="#D9C6A7" strokeWidth="2" />
       <path d="M337 87V505" stroke={K.redDark} strokeWidth="9" />
-      <path d="M54 120 306 145M54 164 306 189M54 208 306 233M54 252 306 277M54 296 306 321M54 340 306 365M54 384 306 409" stroke="#C9B493" strokeWidth="3" opacity=".75" />
-      <path d="M365 130 614 102M365 175 614 147M365 220 614 192M365 265 614 237M365 310 614 282M365 355 614 327M365 400 614 372" stroke="#C9B493" strokeWidth="3" opacity=".75" />
-      <text x="54" y="108" fill={K.blue} fontSize="19" fontFamily="Georgia" fontStyle="italic">My first years</text>
-      <text x="365" y="117" fill={K.redDark} fontSize="14" fontFamily="Arial" fontWeight="700">A LITTLE AT A TIME</text>
-      <g opacity={memory} transform={`translate(102 ${229 + (1 - memory) * 18}) scale(${interpolate(memory, [0, 1], [.72, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})})`}>
-        <rect width="146" height="124" fill={K.paperLight} stroke={K.paperShade} strokeWidth="3" />
-        <rect x="9" y="9" width="128" height="82" fill="#DCE8DF" />
-        <circle cx="79" cy="40" r="22" fill={K.gold} />
-        <path d="M43 89q5-35 36-35t37 35" fill={K.blueLight} />
-        <path d="M19 108h84" stroke={K.red} strokeWidth="3" strokeLinecap="round" />
-        <text x="112" y="113" fill={K.redDark} fontSize="10" fontFamily="Arial" fontWeight="700">01</text>
+      <g clipPath="url(#baby-book-left-page)">
+        <g opacity={writing}>
+          <text x="54" y="108" fill={K.blue} fontSize="19" fontFamily="Georgia" fontStyle="italic">My first years</text>
+          <text x="54" y="130" fill="#8A7963" fontSize="10" fontFamily="Arial" fontWeight="700" letterSpacing="1.2">LITTLE MOMENTS, KEPT CLOSE</text>
+          <path d="M54 139H303" stroke="#D8C6A9" strokeWidth="2" />
+          <g opacity={memory} transform={`translate(69 ${158 + (1 - memory) * 18}) scale(${interpolate(memory, [0, 1], [.78, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})})`}>
+            <rect x="0" y="0" width="220" height="202" fill="#FFFDF8" stroke="#D9C6A7" strokeWidth="2" />
+            <rect x="10" y="10" width="200" height="137" fill="#DDE9E7" />
+            <path d="M10 114Q50 75 84 108t63-1 63 8v32H10Z" fill="#8DAF9B" />
+            <circle cx="162" cy="42" r="17" fill={K.gold} />
+            <path d="M47 132q4-49 47-49t47 49" fill={K.blueLight} />
+            <circle cx="94" cy="69" r="25" fill="#F8F1E5" />
+            <path d="M69 68q4-29 28-29 23 0 25 25-15-10-28-7-12 8-25 11Z" fill={K.night} />
+            <circle cx="86" cy="71" r="2" fill={K.ink} />
+            <circle cx="102" cy="71" r="2" fill={K.ink} />
+            <path d="M88 82q7 6 13 0" fill="none" stroke={K.redDark} strokeWidth="2" strokeLinecap="round" />
+            <circle cx="190" cy="167" r="9" fill={K.red} />
+            <path d="M188 167h4m-2-2v4" stroke={K.paperLight} strokeWidth="1.5" strokeLinecap="round" />
+            <text x="14" y="174" fill={K.ink} fontSize="14" fontFamily="Georgia" fontStyle="italic">A favorite day</text>
+            <text x="14" y="191" fill="#8A7963" fontSize="9" fontFamily="Arial" fontWeight="700" letterSpacing="1">FAMILY MEMORY</text>
+          </g>
+          <g opacity={writing * (1 - memory)}>
+            <path d="M65 225h218M65 258h180M65 291h202M65 324h166M65 357h192" stroke="#D8C6A9" strokeWidth="3" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - writing} />
+          </g>
+          <g opacity={memory}>
+            <path d="M58 401h100" stroke={K.red} strokeWidth="3" strokeLinecap="round" />
+            <text x="58" y="426" fill={K.blue} fontSize="16" fontFamily="Georgia" fontStyle="italic">First steps</text>
+            <text x="58" y="446" fill="#8A7963" fontSize="10" fontFamily="Arial" fontWeight="700" letterSpacing="1">A NEW LITTLE ADVENTURE</text>
+            <path d="M58 459h230" stroke="#D8C6A9" strokeWidth="2" />
+          </g>
+        </g>
+      </g>
+      <g clipPath="url(#baby-book-right-page)" opacity={writing}>
+        <text x="365" y="112" fill={K.redDark} fontSize="12" fontFamily="Arial" fontWeight="700" letterSpacing="1.2">HEALTH &amp; GROWTH</text>
+        <text x="365" y="137" fill="#7D7162" fontSize="10" fontFamily="Arial" fontWeight="700" letterSpacing=".8">A RECORD OF THE FIRST YEAR</text>
+        <path d="M365 148H614" stroke="#D2BE9E" strokeWidth="2" />
+        <g>
+          <rect x="368" y="163" width="238" height="190" fill="#FFFCF5" stroke="#D8C6A9" strokeWidth="2" />
+          {[0, 1, 2, 3].map((i) => (
+            <path key={i} d={`M382 ${195 + i * 36}H593`} stroke="#D9D2C5" strokeWidth="1.5" strokeDasharray="3 7" />
+          ))}
+          <path d="M382 181V333M593 181V333" stroke="#D9D2C5" strokeWidth="1.5" />
+          <path d="M382 314C418 304 443 294 466 278S522 251 593 235" fill="none" stroke={K.blue} strokeWidth="4" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - growthReveal} />
+          <path d="M382 325C420 316 444 310 470 292S531 272 593 259" fill="none" stroke={K.red} strokeWidth="4" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - growthReveal} />
+          <path d="M382 292C420 289 450 284 476 276S540 266 593 244" fill="none" stroke={K.green} strokeWidth="3" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - growthReveal} />
+          {[382, 452, 523, 593].map((x, i) => (
+            <g key={x} opacity={ease(frame, openAt + 34 + i * 5, 10)}>
+              <circle cx={x} cy={314 - i * 26} r="5" fill={K.paperLight} stroke={K.blue} strokeWidth="3" />
+              <circle cx={x} cy={325 - i * 22} r="4" fill={K.paperLight} stroke={K.red} strokeWidth="2.5" />
+            </g>
+          ))}
+          <text x="382" y="346" fill="#817663" fontSize="9" fontFamily="Arial" fontWeight="700">BIRTH</text>
+          <text x="593" y="346" textAnchor="end" fill="#817663" fontSize="9" fontFamily="Arial" fontWeight="700">12 MONTHS</text>
+        </g>
+        <g transform="translate(370 379)">
+          <circle cx="4" cy="0" r="4" fill={K.blue} />
+          <text x="13" y="4" fill="#52677D" fontSize="10" fontFamily="Arial" fontWeight="700">weight</text>
+          <circle cx="88" cy="0" r="4" fill={K.red} />
+          <text x="97" y="4" fill="#52677D" fontSize="10" fontFamily="Arial" fontWeight="700">length</text>
+          <circle cx="171" cy="0" r="4" fill={K.green} />
+          <text x="180" y="4" fill="#52677D" fontSize="10" fontFamily="Arial" fontWeight="700">head</text>
+        </g>
+        <path d="M370 412H603" stroke="#D2BE9E" strokeWidth="2" />
+        <text x="370" y="438" fill={K.blue} fontSize="13" fontFamily="Georgia" fontStyle="italic">Measured with care.</text>
       </g>
       <g opacity={fragile}>
         <path d="M582 58 649 78 645 122Q625 102 590 100Z" fill={K.paperShade} />
@@ -121,8 +184,6 @@ const Notebook = ({frame, openAt, memoryAt, fragileAt}: {frame: number; openAt: 
         <path d="M400 236q48 9 104-8" fill="none" stroke="#52677D" strokeWidth="10" strokeLinecap="round" opacity=".25" filter="url(#act-one-ink-smudge)" />
         <path d="M434 253h79" fill="none" stroke="#52677D" strokeWidth="5" strokeLinecap="round" opacity=".2" filter="url(#act-one-ink-smudge)" />
       </g>
-      <path d="M424 308q27-50 55 0t55 0 53 0" fill="none" stroke={K.red} strokeWidth="5" strokeLinecap="round" />
-      <path d="M454 323h151" stroke="#BDAA8A" strokeWidth="2" />
     </g>
   );
 };
@@ -206,18 +267,24 @@ const QrMark = ({size, progress}: {size: number; progress: number}) => {
 
 const ActOne = ({frame}: {frame: number}) => {
   const bookAt = cueFrame(0, 1);
+  const notebooksAt = bookAt + 74;
+  const cardAt = bookAt + 150;
   const memoryAt = cueFrame(0, 2);
   const fragileAt = cueFrame(0, 3);
   const scatterAt = cueFrame(0, 4);
   const clinicAt = cueFrame(0, 5);
   const open = ease(frame, bookAt, 34);
-  const timelineExit = ease(frame, bookAt - 6, 32);
+  const cardReveal = ease(frame, cardAt, 26);
+  const archiveFade = 1 - ease(frame, fragileAt, 24);
+  const timelineExit = ease(frame, bookAt - 28, 22);
+  const growthDraw = sweep(frame, 12, 190);
   const scatter = ease(frame, scatterAt, 30);
   const paperExit = ease(frame, clinicAt - 18, 24);
   const clinic = ease(frame, clinicAt, 28);
+  const notebookStack = ease(frame, notebooksAt, 24) * archiveFade * (1 - clinic);
   const redLine = sweep(frame, cueFrame(0, 6), cueFrame(0, 7));
   const notebookFade = 1 - ease(frame, clinicAt, 26);
-  const immunization = open * (1 - ease(frame, scatterAt, 24)) * (1 - clinic);
+  const immunization = cardReveal * (1 - ease(frame, scatterAt, 24)) * (1 - clinic);
   const warning = ease(frame, cueFrame(0, 6), 22);
 
   return (
@@ -231,35 +298,83 @@ const ActOne = ({frame}: {frame: number}) => {
           <filter id="act-one-paper-shadow" x="-30%" y="-30%" width="160%" height="170%">
             <feGaussianBlur stdDeviation="12" />
           </filter>
+          <linearGradient id="act-one-growth-line" x1="0" x2="1">
+            <stop offset="0%" stopColor={K.blue} />
+            <stop offset="56%" stopColor={K.blueLight} />
+            <stop offset="100%" stopColor={K.red} />
+          </linearGradient>
+          <linearGradient id="act-one-growth-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor={K.blue} stopOpacity=".16" />
+            <stop offset="100%" stopColor={K.blue} stopOpacity="0" />
+          </linearGradient>
         </defs>
         <path d="M0 790Q415 742 830 785T1920 768V1080H0Z" fill="#E8EDF3" />
         <path d="M0 786Q415 738 830 781T1920 764" fill="none" stroke="#B8C6D4" strokeWidth="3" />
         <text x="110" y="146" fill={K.blue} fontSize="20" fontFamily="Arial" fontWeight="700" letterSpacing="4">A CHILDHOOD, ONE PAGE AT A TIME</text>
         <text x="104" y="262" fill={K.ink} fontSize="100" fontFamily="Georgia" fontWeight="700">Six years.</text>
         <text x="112" y="318" fill="#52677D" fontSize="25" fontFamily="Arial">A thousand little things to remember.</text>
-        <g opacity={1 - timelineExit} transform={`translate(${105 - timelineExit * 42} ${397 - timelineExit * 18})`}>
-          <path d="M20 78H458" stroke="#A9B8C7" strokeWidth="3" />
-          {Array.from({length: 6}, (_, i) => {
-            const x = 42 + i * 78;
-            const rise = spring({frame: Math.max(0, frame - i * 12), fps, config: {damping: 14, stiffness: 110}});
-            const r = 17 + i * 2;
-            const pulse = 1 + Math.sin((frame - i * 8) * .06) * .035 * rise;
+        <g opacity={1 - timelineExit} transform={`translate(0 ${timelineExit * -18})`}>
+          <text x="146" y="406" fill="#52677D" fontSize="15" fontFamily="Arial" fontWeight="700" letterSpacing="2">GROWTH, MILESTONES &amp; HEALTH</text>
+          <path d="M148 715H1772" stroke="#A9B8C7" strokeWidth="2" />
+          {[0, 1, 2, 3].map((i) => (
+            <path key={i} d={`M148 ${670 - i * 74}H1772`} stroke="#A9B8C7" strokeWidth="1.5" strokeDasharray="3 12" opacity=".34" />
+          ))}
+          <path d="M150 690C250 676 330 653 420 642S600 613 690 600 870 571 960 555 1140 526 1230 510 1410 479 1500 465 1680 437 1770 425V715H150Z" fill="url(#act-one-growth-fill)" opacity={growthDraw} />
+          <path d="M150 690C250 676 330 653 420 642S600 613 690 600 870 571 960 555 1140 526 1230 510 1410 479 1500 465 1680 437 1770 425" fill="none" stroke="#A9B8C7" strokeWidth="5" strokeLinecap="round" opacity=".35" />
+          <path d="M150 690C250 676 330 653 420 642S600 613 690 600 870 571 960 555 1140 526 1230 510 1410 479 1500 465 1680 437 1770 425" fill="none" stroke="url(#act-one-growth-line)" strokeWidth="8" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - growthDraw} />
+          {[
+            {year: 'BIRTH', x: 150, y: 690, label: ''},
+            {year: '1 YEAR', x: 420, y: 642, label: 'FIRST STEPS'},
+            {year: '2 YEARS', x: 690, y: 600, label: ''},
+            {year: '3 YEARS', x: 960, y: 555, label: 'NEW MILESTONES'},
+            {year: '4 YEARS', x: 1230, y: 510, label: ''},
+            {year: '5 YEARS', x: 1500, y: 465, label: 'HEALTH CHECKS'},
+            {year: '6 YEARS', x: 1770, y: 425, label: ''},
+          ].map(({year, x, y, label}, i) => {
+            const appear = spring({frame: Math.max(0, frame - 12 - i * 24), fps, config: {damping: 15, stiffness: 120}});
+            const color = [K.red, K.gold, K.blueLight, K.green, K.lilac, K.red, K.blue][i];
+            const radius = 11 + i * 1.15;
             return (
-              <g key={i} opacity={Math.min(1, rise)} transform={`translate(${x} 78) scale(${pulse}) translate(${-x} -78)`}>
-                <circle cx={x} cy={78} r={r + 4} fill={K.blue} opacity=".12" />
-                <circle cx={x} cy={78} r={r} fill={[K.red, K.gold, K.blueLight, K.green, K.lilac, K.red][i]} />
-                <circle cx={x} cy={78 - r - 15} r={8 + i} fill={K.paperShade} />
-                <path d={`M${x - 11} ${78-r-3}q11-17 22 0`} fill="none" stroke={K.paperLight} strokeWidth="5" strokeLinecap="round" />
-                <text x={x} y="135" textAnchor="middle" fill={K.ink} fontSize="13" fontFamily="Arial">{i === 0 ? 'newborn' : `${i} yr`}</text>
+              <g key={year} opacity={appear} transform={`translate(${x} ${y}) scale(${interpolate(appear, [0, 1], [.55, 1])})`}>
+                <path d={`M0 0V${715 - y}`} stroke={color} strokeWidth="2" opacity=".5" />
+                <circle r={radius + 8} fill={color} opacity=".13" />
+                <circle r={radius} fill={K.paperLight} stroke={color} strokeWidth="6" />
+                <circle r="4" fill={color} />
+                <text x="0" y="52" textAnchor="middle" fill="#52677D" fontSize="14" fontFamily="Arial" fontWeight="700" letterSpacing="1">{year}</text>
+                {label && (
+                  <g transform={`translate(-91 ${-104 - (i === 5 ? 2 : 0)})`}>
+                    <rect width="182" height="36" rx="18" fill={K.paperLight} stroke={color} strokeWidth="2" />
+                    {i === 1 && <path d="M18 22q-9-8 0-16 7 0 8 6 2-6 9-6 9 8 0 16l-9 7Z" transform="translate(0 1) scale(.58)" fill={K.red} />}
+                    {i === 3 && <path d="M15 19l7-7 6 5 10-11" fill="none" stroke={K.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />}
+                    {i === 5 && <path d="M14 18h6l4-9 6 17 5-10h8" fill="none" stroke={K.red} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+                    <text x="54" y="23" fill={K.ink} fontSize="12" fontFamily="Arial" fontWeight="700" letterSpacing=".5">{label}</text>
+                  </g>
+                )}
               </g>
             );
           })}
         </g>
-        <g opacity={open * notebookFade} transform={`translate(0 ${floatY(frame, .018, 4)})`}>
+        <g opacity={open * notebookFade} transform={`translate(0 ${interpolate(open, [0, 1], [92, 0]) + floatY(frame, .018, 4)}) scale(${interpolate(open, [0, 1], [.94, 1])})`}>
           <ellipse cx="1048" cy="510" rx="370" ry="260" fill="#52677D" opacity=".14" filter="url(#act-one-paper-shadow)" />
           <Notebook frame={frame} openAt={bookAt} memoryAt={memoryAt} fragileAt={fragileAt} />
         </g>
-        <g opacity={immunization} transform={`translate(${1430 + floatY(frame + 20, .026, 3)} ${420 + floatY(frame, .024, 3)}) rotate(4 107 74) scale(1.12)`}>
+        <g opacity={notebookStack} transform={`translate(${interpolate(notebookStack, [0, 1], [-70, 0])} ${floatY(frame + 7, .025, 2)})`}>
+          <g transform="translate(95 520) rotate(-3 178 112) scale(.72)">
+            <path d="M12 16Q12 8 22 8H334Q344 8 344 18V220H12Z" fill="#D9C6A7" transform="translate(8 8)" />
+            <path d="M12 16Q12 8 22 8H334Q344 8 344 18V220H12Z" fill="#FFFCF5" stroke="#C9B493" strokeWidth="3" />
+            <path d="M26 41h288" stroke={K.blue} strokeWidth="7" strokeLinecap="round" />
+            <text x="34" y="78" fill={K.ink} fontFamily="Georgia" fontSize="24" fontWeight="700">Baby notes</text>
+            <path d="M34 111h250M34 143h221M34 175h237" stroke="#C9B493" strokeWidth="4" strokeLinecap="round" />
+            <path d="M314 8v212" stroke={K.red} strokeWidth="8" />
+          </g>
+          <g transform="translate(365 527) rotate(2 130 72) scale(.8)">
+            <path d="M0 0h238v146H0Z" fill={K.paperLight} stroke="#C8D6E4" strokeWidth="3" />
+            <text x="18" y="31" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="1">GROWTH LOG</text>
+            <path d="M18 53h196M18 77h166M18 101h188" stroke="#C9D6E2" strokeWidth="3" />
+            <circle cx="203" cy="119" r="11" fill={K.red} opacity=".82" />
+          </g>
+        </g>
+        <g opacity={immunization * archiveFade} transform={`translate(${interpolate(cardReveal, [0, 1], [1980, 1430]) + floatY(frame + 20, .026, 3)} ${420 + floatY(frame, .024, 3)}) rotate(${interpolate(cardReveal, [0, 1], [11, 4])} 107 74) scale(${interpolate(cardReveal, [0, 1], [.86, 1.12])})`}>
           <path d="M8 10h214v148H8Z" fill="#121C2B" opacity=".16" transform="translate(7 8)" filter="url(#act-one-paper-shadow)" />
           <path d="M0 0h214v148H0Z" fill={K.paperLight} stroke="#CCD7E3" strokeWidth="3" />
           <path d="M0 0h214v28H0Z" fill={K.blue} />
