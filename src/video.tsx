@@ -12,6 +12,14 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {actFrames, acts, durationInFrames} from './script';
+import {
+  EditorialChrome,
+  EditorialTitle,
+  E,
+  KineticSuper,
+  PaperWipe,
+  PremiumFinish,
+} from './editorial';
 
 const K = {
   night: '#23415A',
@@ -23,7 +31,7 @@ const K = {
   ink: '#23415A',
   red: '#FF8DA1',
   redDark: '#B83D65',
-  gold: '#87BCEB',
+  gold: '#E9B45C',
   green: '#86A989',
   sky: '#B9D7D1',
   lilac: '#AAA1C3',
@@ -687,9 +695,6 @@ const ActOne = ({frame}: {frame: number}) => {
   const missingRecord = ease(frame, recordCueAt - 6, 18);
   const missingRecordX = interpolate(missingRecord, [0, 1], [-28, 0]);
 
-  // Kinetic Typography & Callout Animations
-  const titleReveal = ease(frame, -18, 18);
-  const highlighterSwipe = sweep(frame, 10, 32);
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
       {/* Warm Pastel Editorial Blooms (Top-Left Sky, Top-Right Rose) */}
@@ -713,70 +718,6 @@ const ActOne = ({frame}: {frame: number}) => {
         <line x1="0" y1="892" x2="1920" y2="890" stroke="#D2C6B2" strokeWidth="2.5" />
 
         {/* ===================================================================
-         * LEFT EDITORIAL TYPOGRAPHY STACK ("01 / THE PAPER PROBLEM")
-         * =================================================================== */}
-        <g opacity={titleReveal} transform={`translate(110 ${195 + (1 - titleReveal) * 18})`}>
-          {/* Dark Navy Editorial Pill Badge */}
-          <rect x="0" y="0" width="445" height="48" rx="6" fill={K.night} filter="url(#act1-cutout-shadow)" />
-          <text
-            x="22"
-            y="32"
-            fill="#F8F9FA"
-            fontSize="24"
-            fontFamily="Arial, Helvetica, sans-serif"
-            fontWeight="800"
-            letterSpacing="2"
-          >
-            <tspan fill={K.gold}>01 / </tspan>
-            THE PAPER PROBLEM
-          </text>
-
-          {/* Angled Gold Highlighter Brush Swipe Behind "Six years." */}
-          <g transform="translate(-26 78) rotate(-2.5)">
-            <path
-              d="M6 12 Q320 4 635 8 L645 104 Q320 108 12 102 Z"
-              fill={K.gold}
-              opacity="0.88"
-              pathLength="1"
-              strokeDasharray="1"
-              strokeDashoffset={1 - highlighterSwipe}
-              filter="url(#act1-ink-bleed)"
-              style={{
-                clipPath: `inset(0 ${(1 - highlighterSwipe) * 100}% 0 0)`,
-              }}
-            />
-          </g>
-
-          {/* Heavy Georgia Serif Display Title */}
-          <text
-            x="8"
-            y="164"
-            fill="#1D242B"
-            fontSize="118"
-            fontFamily="Georgia, serif"
-            fontWeight="700"
-            letterSpacing="-2"
-          >
-            Six years.
-          </text>
-
-          {/* Slate Subtitle Pill */}
-          <g transform="translate(8 206)">
-            <rect x="0" y="0" width="530" height="44" rx="4" fill="#64748B" />
-            <text
-              x="16"
-              y="30"
-              fill="#FFFFFF"
-              fontSize="24"
-              fontFamily="Arial, Helvetica, sans-serif"
-              fontWeight="600"
-            >
-              A thousand little things to remember.
-            </text>
-          </g>
-        </g>
-
-        {/* ===================================================================
          * HERO OPEN NOTEBOOK (Always visible in Act 1, opens & populates)
          * =================================================================== */}
         <g
@@ -788,7 +729,7 @@ const ActOne = ({frame}: {frame: number}) => {
 
         {/* Secondary Stacked Notebooks (Left Margin) */}
         <g opacity={notebookStack} transform={`translate(220 650) scale(${babyNotesPop}) translate(-220 -650)`}>
-          <g transform="translate(95 565) rotate(-4 170 106) scale(0.74)" filter="url(#act1-cutout-shadow)">
+          <g transform="translate(95 493) rotate(-4 170 106) scale(0.74)" filter="url(#act1-cutout-shadow)">
             <rect x="7" y="7" width="340" height="212" fill="#D8E5ED" stroke={K.night} strokeWidth="3" />
             <path d="M0 0H328L340 12V200L328 212H0Z" fill="#FFFCF5" stroke={K.night} strokeWidth="3.5" />
             <path d="M0 0h18v212H0Z" fill={K.blue} />
@@ -813,7 +754,7 @@ const ActOne = ({frame}: {frame: number}) => {
 
         {/* Separate visit log appears on the "notebooks" narration cue. */}
         <g opacity={thirdNotebook} transform={`translate(500 550) scale(${thirdNotebookPop}) translate(-500 -550)`}>
-          <g transform="translate(390 480) rotate(3 150 95) scale(0.72)" filter="url(#act1-cutout-shadow)">
+          <g transform="translate(390 408) rotate(3 150 95) scale(0.72)" filter="url(#act1-cutout-shadow)">
             <rect x="7" y="7" width="300" height="190" fill="#D6E2D8" stroke={K.night} strokeWidth="3" />
             <path d="M0 0H286L300 14V190H0Z" fill="#FFFCF5" stroke={K.night} strokeWidth="3.5" />
             <path d="M0 0h18v190H0Z" fill={K.green} />
@@ -839,9 +780,9 @@ const ActOne = ({frame}: {frame: number}) => {
         {/* DOH Immunization Card Cutout */}
         <g
           opacity={immunization * archiveFade}
-          transform={`translate(668 747) scale(${cardPop}) translate(-668 -747)`}
+          transform={`translate\(668 747\) scale(${cardPop}) translate\(-668 -747\)`}
         >
-          <g transform="translate(530 655) rotate(3 135 90) scale(1.02)" filter="url(#act1-cutout-shadow)">
+          <g transform="translate(530 583) rotate(3 135 90) scale(1.02)" filter="url(#act1-cutout-shadow)">
           <rect x="7" y="7" width="270" height="180" fill="#D9E5DD" stroke={K.night} strokeWidth="3" />
           <path d="M0 0H258L270 12V180H0Z" fill={K.paperLight} stroke={K.night} strokeWidth="3.5" />
           <path d="M0 0h270v42H0Z" fill={K.blue} />
@@ -1045,6 +986,90 @@ const ActOne = ({frame}: {frame: number}) => {
         </g>
 
       </svg>
+
+      <EditorialTitle
+        frame={frame}
+        x={100}
+        y={76}
+        width={760}
+        index="01"
+        label="The paper problem"
+        accent={E.gold}
+        showKicker={false}
+        start={2}
+        lines={[
+          {
+            text: 'Six years.',
+            size: 118,
+            highlight: ['years'],
+            highlightColor: E.gold,
+          },
+        ]}
+        subtitle="A thousand little things to remember."
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={fragileAt}
+        end={scatterAt}
+        x={100}
+        y={336}
+        width={840}
+        label="The keepsake"
+        size={62}
+        accent={E.coral}
+        lines={[
+          {
+            text: 'Paper is fragile.',
+            highlight: ['fragile'],
+            highlightColor: E.gold,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={scatterAt}
+        end={clinicAt}
+        x={100}
+        y={336}
+        width={930}
+        label="What happens next"
+        size={54}
+        accent={E.coral}
+        lines={[
+          {
+            text: 'Lost. Damaged. Scattered.',
+            highlight: ['Scattered.'],
+            highlightColor: E.pink,
+            wordStarts: [
+              scatterAt,
+              scatterAt + Math.round(2.4 * fps),
+              scatterAt + Math.round(4.6 * fps),
+            ],
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={recordCueAt}
+        end={actFrames[0] - 8}
+        x={100}
+        y={336}
+        width={820}
+        label="At the clinic"
+        size={62}
+        accent={E.coral}
+        lines={[
+          {
+            text: 'Buried or missing.',
+            accent: ['missing.'],
+            highlight: ['missing.'],
+            highlightColor: E.pink,
+          },
+        ]}
+      />
     </AbsoluteFill>
   );
 };
@@ -1118,7 +1143,6 @@ const ActTwo = ({frame}: {frame: number}) => {
   const sdgStart = cueFrame(1, 9) + 174;
   const sdg = ease(frame, sdgStart, 24);
   const phoneY = (1 - introduce) * 80;
-  const titleSwipe = sweep(frame, 8, 28);
 
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
@@ -1135,34 +1159,6 @@ const ActTwo = ({frame}: {frame: number}) => {
         <rect x="0" y="0" width="1920" height="1080" fill="url(#act2-ruled-paper)" />
         <path d="M0 845 Q445 815 912 842 T1920 832 V1080 H0 Z" fill="#EFE8DA" />
         <line x1="0" y1="840" x2="1920" y2="835" stroke="#D2C6B2" strokeWidth="2.5" />
-
-        {/* Editorial Section Badge & Highlighter Headline */}
-        <g transform="translate(110 124)">
-          <rect x="0" y="0" width="320" height="44" rx="6" fill={K.night} filter="url(#act2-cutout-shadow)" />
-          <text x="20" y="29" fill="#F8F9FA" fontSize="22" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="2">
-            <tspan fill={K.blueLight}>02 / </tspan>
-            BABYBOOK+
-          </text>
-
-          <g transform="translate(-14 68) rotate(-1.8)">
-            <rect
-              x="0"
-              y="0"
-              width={860 * titleSwipe}
-              height="82"
-              fill={K.gold}
-              opacity="0.86"
-              filter="url(#act2-ink-bleed)"
-            />
-          </g>
-          <text x="4" y="136" fill={K.ink} fontSize="82" fontFamily="Georgia, serif" fontWeight="700" letterSpacing="-1.5">
-            Health has a history.
-          </text>
-          <rect x="4" y="168" width="560" height="40" rx="4" fill="#64748B" />
-          <text x="18" y="195" fill="#FFFFFF" fontSize="22" fontFamily="Arial, sans-serif" fontWeight="600">
-            A digital companion keeps the whole story close.
-          </text>
-        </g>
 
         {/* Taped Polaroid Memory Cutouts */}
         <g opacity={firstMemory} transform={`translate(112 ${426 + floatY(frame, 0.035, 3) * firstMemory})`}>
@@ -1352,6 +1348,141 @@ const ActTwo = ({frame}: {frame: number}) => {
           </text>
         </g>
       </svg>
+
+      <EditorialTitle
+        frame={frame}
+        x={100}
+        y={76}
+        width={900}
+        index="02"
+        label="The digital companion"
+        accent={E.gold}
+        showKicker={false}
+        start={2}
+        lines={[
+          {
+            text: 'Health has a history.',
+            size: 76,
+            highlight: ['history.'],
+            highlightColor: E.gold,
+          },
+        ]}
+        subtitle="A digital companion keeps the whole story close."
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(1, 2)}
+        end={cueFrame(1, 3)}
+        x={100}
+        y={232}
+        width={860}
+        label="In one place"
+        size={48}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'One app. The whole story.',
+            highlight: ['whole'],
+            highlightColor: E.gold,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(1, 3)}
+        end={cueFrame(1, 4)}
+        x={100}
+        y={232}
+        width={860}
+        label="The platform"
+        size={48}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'Health, kept clear.',
+            highlight: ['clear.'],
+            highlightColor: E.blue,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(1, 4)}
+        end={cueFrame(1, 6)}
+        x={100}
+        y={232}
+        width={900}
+        label="The measurements"
+        size={48}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'Growth, on the record.',
+            highlight: ['record.'],
+            highlightColor: E.blue,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(1, 6)}
+        end={cueFrame(1, 8)}
+        x={100}
+        y={232}
+        width={980}
+        label="The milestones"
+        size={48}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'Milestones, remembered.',
+            highlight: ['remembered.'],
+            highlightColor: E.pink,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(1, 8)}
+        end={sdgStart}
+        x={100}
+        y={232}
+        width={860}
+        label="The platform"
+        size={48}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'Memories, saved.',
+            highlight: ['saved.'],
+            highlightColor: E.pink,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={sdgStart}
+        end={actFrames[1] - 8}
+        x={100}
+        y={232}
+        width={860}
+        label="The promise"
+        size={48}
+        accent={E.sage}
+        lines={[
+          {
+            text: 'Good health, for every child.',
+            highlight: ['every', 'child.'],
+            highlightColor: E.sage,
+          },
+        ]}
+      />
     </AbsoluteFill>
   );
 };
@@ -1386,10 +1517,11 @@ const ActThree = ({frame}: {frame: number}) => {
   const doctor = ease(frame, 0, 24) * (1 - ease(frame, selectionStart - 12, 12));
   const doctorBob = Math.sin(frame * 0.08) * 2;
   const parentX = interpolate(ease(frame, selectionStart - 24, 24), [0, 1], [170, -60]);
-
-  // Kinetic Typography & Editorial Motion Enhancements
-  const titleReveal = ease(frame, 4, 18);
-  const highlighterSwipe = sweep(frame, 14, 34);
+  const revokedStamp = spring({
+    frame: Math.max(0, frame - (revokeStart + 20)),
+    fps,
+    config: {damping: 11, stiffness: 190, mass: 0.8},
+  });
 
   return (
     <AbsoluteFill
@@ -1446,46 +1578,6 @@ const ActThree = ({frame}: {frame: number}) => {
             stroke="#D2C6B2"
             strokeWidth="2.5"
         />
-
-        {/* ===================================================================
-         * EDITORIAL HEADER & KINETIC HIGHLIGHTER SWIPE
-         * =================================================================== */}
-        <g opacity={titleReveal} transform={`translate(108 ${96 + (1 - titleReveal) * 16})`}>
-          {/* Dark editorial section badge */}
-          <rect x="0" y="0" width="465" height="44" rx="6" fill={K.night} filter="url(#act3-cutout-shadow)" />
-          <text
-            x="18"
-            y="29"
-            fill="#F8F9FA"
-            fontFamily="Arial, Helvetica, sans-serif"
-            fontSize="19"
-            fontWeight="800"
-            letterSpacing="2.2"
-          >
-            <tspan fill={K.gold}>03 / </tspan>
-            A PARENT-CONTROLLED VISIT
-          </text>
-
-          {/* Angled gold highlighter behind the second headline line */}
-          <g transform="translate(-12 162) rotate(-1.4)">
-            <path
-              d="M4 8 Q360 2 720 6 L728 74 Q360 78 8 72 Z"
-              fill={K.gold}
-              opacity="0.88"
-              filter="url(#act3-ink-bleed)"
-              style={{
-                clipPath: `inset(0 ${(1 - highlighterSwipe) * 100}% 0 0)`,
-              }}
-            />
-          </g>
-
-          <text x="0" y="138" fill="#1D242B" fontFamily="Georgia, serif" fontSize="82" fontWeight="700" letterSpacing="-1.5">
-            One visit.
-          </text>
-          <text x="2" y="218" fill="#1D242B" fontFamily="Georgia, serif" fontSize="82" fontWeight="700" letterSpacing="-1.5">
-            Only what’s needed.
-          </text>
-        </g>
 
         {/* ===================================================================
          * PARENT & CHILD CHARACTER (With Vox Print Offset & Ink Contours)
@@ -1825,7 +1917,10 @@ const ActThree = ({frame}: {frame: number}) => {
           />
 
           {/* Diagonal Red Stamp */}
-          <g transform="translate(174 226) rotate(-4)">
+          <g
+            transform={`translate(174 226) rotate(${-4 + (1 - revokedStamp) * 12}) scale(${0.72 + revokedStamp * 0.28})`}
+            opacity={revokedStamp}
+          >
             <rect x="-126" y="-22" width="252" height="42" fill="none" stroke={K.redDark} strokeWidth="3.5" />
             <text
               x="0"
@@ -1875,10 +1970,105 @@ const ActThree = ({frame}: {frame: number}) => {
             );
           })}
           <text x="0" y="114" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
-            EVERY VIEW, RECORDED
+            IMMUTABLE AUDIT LOG
           </text>
         </g>
       </svg>
+
+      <EditorialTitle
+        frame={frame}
+        x={100}
+        y={76}
+        width={760}
+        index="03"
+        label="A parent-controlled visit"
+        accent={E.blue}
+        showKicker={false}
+        start={2}
+        lines={[
+          {text: 'One visit.', size: 76},
+          {
+            text: 'Only what’s needed.',
+            size: 76,
+            highlight: ['needed.'],
+            highlightColor: E.blue,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={4}
+        end={cueFrame(2, 2)}
+        x={1052}
+        y={126}
+        width={710}
+        label="The question"
+        size={50}
+        accent={E.coral}
+        lines={[
+          {text: 'Who controls', highlight: ['controls'], highlightColor: E.pink},
+          {text: 'the data?'},
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(2, 2)}
+        end={selectionStart}
+        x={1052}
+        y={126}
+        width={710}
+        label="The difference"
+        size={50}
+        accent={E.coral}
+        lines={[
+          {text: 'No corporate'},
+          {text: 'cloud walls.'},
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={selectionStart}
+        end={auditStart}
+        x={1052}
+        y={126}
+        width={710}
+        label="The handshake"
+        size={50}
+        accent={E.blue}
+        lines={[
+          {
+            text: 'Select. Share.',
+            wordStarts: [selectionStart, selectionStart + 10],
+          },
+          {
+            text: 'Scan. Revoke.',
+            wordStarts: [scanStart, revokeStart],
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={auditStart}
+        end={actFrames[2] - 8}
+        x={1052}
+        y={126}
+        width={710}
+        label="The record"
+        size={50}
+        accent={E.coral}
+        lines={[
+          {text: 'Every view,'},
+          {
+            text: 'recorded.',
+            highlight: ['recorded.'],
+            highlightColor: E.gold,
+          },
+        ]}
+      />
     </AbsoluteFill>
   );
 };
@@ -1956,7 +2146,8 @@ const ActFour = ({frame}: {frame: number}) => {
     [970, 526],
     [1293, 644],
   ];
-  const titleSwipe = sweep(frame, 6, 26);
+  const outroTagline = ease(frame, logoStart + 42, 26);
+  const outroFooter = ease(frame, logoStart + 56, 26);
 
   return (
     <AbsoluteFill style={{background: '#F9F6F0', color: K.ink, overflow: 'hidden'}}>
@@ -1983,28 +2174,6 @@ const ActFour = ({frame}: {frame: number}) => {
         <circle cx="959" cy="475" r="310" fill="url(#act4-halftone)" opacity="0.28" />
         <path d="M0 845 Q440 818 900 842 T1920 835 V1080 H0 Z" fill="#EFE8DA" />
         <line x1="0" y1="842" x2="1920" y2="838" stroke="#D2C6B2" strokeWidth="2.5" />
-
-        {/* Editorial Badge & Display Headline */}
-        <g transform="translate(108 106)">
-          <rect x="0" y="0" width="580" height="44" rx="6" fill={K.night} filter="url(#act4-cutout-shadow)" />
-          <text x="18" y="30" fill="#F8F9FA" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="800" letterSpacing="2">
-            <tspan fill={K.gold}>04 / </tspan>
-            THE WHOLE STORY, HELD TOGETHER
-          </text>
-
-          <g transform="translate(-12 68) rotate(-1.5)">
-            <path
-              d="M4 8 Q445 2 900 6 L910 78 Q455 82 8 74 Z"
-              fill={K.red}
-              opacity="0.78"
-              filter="url(#act4-ink-bleed)"
-              style={{clipPath: `inset(0 ${(1 - titleSwipe) * 100}% 0 0)`}}
-            />
-          </g>
-          <text x="0" y="136" fill={K.ink} fontFamily="Georgia, serif" fontSize="78" fontWeight="700" letterSpacing="-1.5">
-            Memory and medicine.
-          </text>
-        </g>
 
         {/* Boxed Editorial Diagram Stamps (INPUT / PROCESS / OUTPUT) */}
         <g opacity={bridge}>
@@ -2127,12 +2296,6 @@ const ActFour = ({frame}: {frame: number}) => {
           <ParentAndChild x={790} y={553} scale={1.15} coat={K.blue} childCoat={K.red} prefix="act4" />
         </g>
 
-        <g opacity={finish} transform={`translate(0 ${interpolate(finish, [0, 1], [28, 0])})`}>
-          <text x="960" y="296" textAnchor="middle" fill={K.night} fontFamily="Georgia, serif" fontSize="32" fontWeight="700">
-            One story. Across a lifetime.
-          </text>
-        </g>
-
         {/* Outro Card */}
         <g opacity={outro}>
           <rect x="0" y="0" width="1920" height="1080" fill="#F9F6F0" />
@@ -2177,9 +2340,135 @@ const ActFour = ({frame}: {frame: number}) => {
               </g>
             </g>
           </g>
-          <path d="M762 582h396" stroke={K.redDark} strokeWidth="5" strokeLinecap="round" filter="url(#act4-ink-bleed)" />
+          <path d="M860 618h200" stroke={E.coral} strokeWidth="4" strokeLinecap="round" />
+
+          <g
+            opacity={outroTagline}
+            transform={`translate(0 ${(1 - outroTagline) * 16})`}
+            textAnchor="middle"
+          >
+            <text
+              x="960"
+              y="648"
+              fill={E.ink}
+              fontFamily="Arial, Helvetica, sans-serif"
+              fontSize="31"
+              fontWeight="800"
+              letterSpacing="4.5"
+            >
+              EVERY MILESTONE. EVERY MEMORY.
+            </text>
+            <text
+              x="960"
+              y="690"
+              fill={E.inkSoft}
+              fontFamily="Georgia, serif"
+              fontStyle="italic"
+              fontSize="23"
+            >
+              Health, held with care.
+            </text>
+          </g>
+
+          <g opacity={outroFooter}>
+            <path d="M884 736h152" stroke={E.gold} strokeWidth="3" strokeLinecap="round" />
+            <text
+              x="960"
+              y="776"
+              textAnchor="middle"
+              fill={E.inkSoft}
+              fontFamily="Arial, Helvetica, sans-serif"
+              fontSize="10"
+              fontWeight="800"
+              letterSpacing="3.2"
+            >
+              A FOUR-PART FIELD GUIDE
+            </text>
+          </g>
         </g>
       </svg>
+
+      <EditorialTitle
+        frame={frame}
+        x={100}
+        y={76}
+        width={820}
+        index="04"
+        label="The whole story, held together"
+        accent={E.coral}
+        showKicker={false}
+        start={2}
+        end={outroStart}
+        lines={[
+          {
+            text: 'Memory and medicine.',
+            size: 80,
+            highlight: ['medicine.'],
+            highlightColor: E.coral,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={6}
+        end={cueFrame(3, 1)}
+        x={460}
+        y={196}
+        width={1000}
+        label="The hybrid model"
+        size={46}
+        accent={E.coral}
+        align="center"
+        lines={[
+          {
+            text: 'Physical keepsakes.',
+            highlight: ['keepsakes.'],
+            highlightColor: E.gold,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(3, 1)}
+        end={cueFrame(3, 3)}
+        x={460}
+        y={196}
+        width={1000}
+        label="The hybrid model"
+        size={46}
+        accent={E.coral}
+        align="center"
+        lines={[
+          {
+            text: 'Digital health records.',
+            highlight: ['records.'],
+            highlightColor: E.blue,
+          },
+        ]}
+      />
+
+      <KineticSuper
+        frame={frame}
+        start={cueFrame(3, 3)}
+        end={outroStart}
+        x={460}
+        y={196}
+        width={1000}
+        label="The hybrid model"
+        size={46}
+        accent={E.coral}
+        align="center"
+        lines={[
+          {
+            text: 'One story. Across a lifetime.',
+            highlight: ['lifetime.'],
+            highlightColor: E.pink,
+          },
+        ]}
+      />
+
       <Sequence from={logoStart} durationInFrames={66}>
         <Audio src={staticFile('audio/act-04-logo-sfx.wav')} volume={0.45} />
       </Sequence>
@@ -2197,51 +2486,162 @@ const StoryCaption = ({actIndex}: {actIndex: number}) => {
   const caption = act.captions.find(
     (item) => frame >= item.start * compositionFps && frame < item.end * compositionFps,
   );
-  const cueStart = caption ? Math.round(caption.start * compositionFps) : 0;
-  const captionProgress = caption ? (cueStart === 0 ? 1 : ease(frame, cueStart, 8)) : 0;
-  const progress = (frame / actFrames[actIndex]) * 100;
+
+  if (!caption) {
+    return null;
+  }
+
+  const cueIndex = act.captions.indexOf(caption);
+  const cueStart = Math.round(caption.start * compositionFps);
+  const cardIn = cueStart === 0 ? 1 : ease(frame, cueStart, 9);
+  const now = frame / compositionFps;
+  const duration = Math.max(0.001, caption.end - caption.start);
+  const words = caption.text.split(' ');
+
+  // Distribute the cue duration across words by character weight.
+  const weights = words.map((word) => Math.max(2, word.replace(/[^a-zA-Z0-9]/g, '').length));
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  let walked = 0;
+  const wordStarts = weights.map((weight) => {
+    const at = caption.start + (walked / totalWeight) * duration;
+    walked += weight;
+    return at;
+  });
+  let active = 0;
+  for (let index = 0; index < wordStarts.length; index++) {
+    if (now >= wordStarts[index]) {
+      active = index;
+    }
+  }
+  const sweep = interpolate(now, [wordStarts[active], wordStarts[active] + 0.15], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const cueProgress = interpolate(now, [caption.start, caption.end], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const captionLength = caption.text.length;
+  const captionSize = captionLength > 190 ? 26 : captionLength > 130 ? 29 : 32;
+  const captionPadding =
+    captionLength > 190 ? '22px 44px 20px' : '28px 52px 24px';
 
   return (
-    <>
-      <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 6, background: 'rgba(17,24,39,0.12)'}}>
-        <div style={{width: `${progress}%`, height: '100%', background: K.gold}} />
-      </div>
-      {caption && (
+    <div
+      style={{
+        position: 'absolute',
+        left: 96,
+        right: 96,
+        bottom: 30,
+        opacity: cardIn,
+        transform: `translateY(${(1 - cardIn) * 16}px)`,
+      }}
+    >
+      <div
+        style={{
+          position: 'relative',
+          background: 'rgba(255,252,245,0.965)',
+          border: `2px solid ${E.ink}`,
+          boxShadow: '9px 10px 0 rgba(22,40,58,0.16)',
+          padding: captionPadding,
+        }}
+      >
         <div
           style={{
             position: 'absolute',
-            left: 104,
-            right: 104,
-            bottom: 36,
-            minHeight: 96,
+            left: 30,
+            top: -15,
             display: 'flex',
             alignItems: 'center',
-            padding: '16px 32px',
-            background: '#FFFCF5',
-            border: `3px solid ${K.night}`,
-            borderLeft: `10px solid ${K.redDark}`,
-            opacity: captionProgress,
-            transform: `translateY(${(1 - captionProgress) * 12}px)`,
-            boxShadow: '6px 8px 0px rgba(17,24,39,0.22)',
+            gap: 8,
+            background: E.ink,
+            color: E.paper,
+            padding: '6px 12px 5px',
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontSize: 10,
+            fontWeight: 800,
+            letterSpacing: '2.4px',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <span style={{width: 6, height: 6, background: E.gold, display: 'inline-block'}} />
+          0{actIndex + 1} / {act.title}
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            right: 22,
+            top: 12,
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontSize: 10,
+            fontWeight: 800,
+            letterSpacing: '2px',
+            color: E.inkMuted,
+          }}
+        >
+          0{cueIndex + 1} / 0{act.captions.length}
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            columnGap: '0.3em',
+            rowGap: '0.04em',
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontSize: captionSize,
+            fontWeight: 800,
+            letterSpacing: '-0.018em',
+            lineHeight: 1.32,
+            color: E.ink,
+          }}
+        >
+          {words.map((word, index) => {
+            const spoken = index <= active;
+            const isActive = index === active;
+            return (
+              <span
+                key={`${word}-${index}`}
+                style={{
+                  display: 'inline-block',
+                  color: spoken ? E.ink : 'rgba(22,40,58,0.42)',
+                  backgroundImage: isActive
+                    ? `linear-gradient(${E.gold}, ${E.gold})`
+                    : 'none',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: `${isActive ? sweep * 100 : 0}% 56%`,
+                  backgroundPosition: '0 86%',
+                }}
+              >
+                {word}
+              </span>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 3,
+            background: 'rgba(22,40,58,0.10)',
           }}
         >
           <div
             style={{
-              width: '100%',
-              textAlign: 'center',
-              color: K.ink,
-              fontFamily: 'Arial, Helvetica, sans-serif',
-              fontSize: 28,
-              fontWeight: 700,
-              letterSpacing: '-.02em',
-              lineHeight: 1.25,
+              width: `${cueProgress * 100}%`,
+              height: '100%',
+              background: E.coral,
             }}
-          >
-            {caption.text}
-          </div>
+          />
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
@@ -2252,10 +2652,43 @@ const ActScene = ({actIndex}: {actIndex: number}) => {
     extrapolateRight: 'clamp',
   });
   const Scene = [ActOne, ActTwo, ActThree, ActFour][actIndex];
+  const drift = interpolate(frame, [0, actFrames[actIndex]], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const scale = 1.012 + drift * 0.008;
+  const panX = (actIndex % 2 === 0 ? 1 : -1) * (drift - 0.5) * 6;
+  const panY = (drift - 0.5) * 4;
+  const act = acts[actIndex];
 
   return (
-    <AbsoluteFill style={{opacity: fade, overflow: 'hidden', fontFamily: 'Arial, Helvetica, sans-serif'}}>
-      <Scene frame={frame} />
+    <AbsoluteFill
+      style={{
+        background: '#F9F6F0',
+        overflow: 'hidden',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: fade,
+          transform: `scale(${scale}) translate(${panX}px, ${panY}px)`,
+          transformOrigin: '50% 46%',
+        }}
+      >
+        <Scene frame={frame} />
+      </div>
+
+      <PremiumFinish />
+      <PaperWipe frame={frame} index={act.id} label={act.title} />
+      <EditorialChrome
+        frame={frame}
+        actIndex={actIndex}
+        actFrames={actFrames}
+        totalFrames={durationInFrames}
+      />
       <StoryCaption actIndex={actIndex} />
     </AbsoluteFill>
   );
