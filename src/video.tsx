@@ -1229,13 +1229,13 @@ const ActTwo = ({frame}: {frame: number}) => {
       />
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
         <VoxDefs prefix="act2" />
-        {/* Image volume shadow */}
-        <filter id="act2-image-shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="4" dy="8" stdDeviation="10" floodColor="#16283A" floodOpacity="0.18" />
+        {/* Image volume shadow — subtle */}
+        <filter id="act2-image-shadow" x="-15%" y="-15%" width="130%" height="130%">
+          <feDropShadow dx="3" dy="6" stdDeviation="6" floodColor="#16283A" floodOpacity="0.10" />
         </filter>
-        {/* Subtle inner glow for image depth */}
+        {/* Inner glow + bevel highlight for volume */}
         <filter id="act2-image-glow" x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#FFFFFF" floodOpacity="0.08" />
+          <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#FFFFFF" floodOpacity="0.10" />
         </filter>
         <rect x="0" y="0" width="1920" height="1080" fill="url(#act2-ruled-paper)" />
         <path d="M0 845 Q445 815 912 842 T1920 832 V1080 H0 Z" fill="#EFE8DA" />
@@ -1997,7 +1997,7 @@ const ActThree = ({frame}: {frame: number}) => {
         start={4}
         end={cueFrame(2, 2)}
         x={1052}
-        y={126}
+        y={110}
         width={710}
         label="The question"
         size={50}
@@ -2013,7 +2013,7 @@ const ActThree = ({frame}: {frame: number}) => {
         start={cueFrame(2, 2)}
         end={selectionStart}
         x={1052}
-        y={126}
+        y={110}
         width={710}
         label="The difference"
         size={50}
@@ -2029,7 +2029,7 @@ const ActThree = ({frame}: {frame: number}) => {
         start={selectionStart}
         end={auditStart}
         x={1052}
-        y={126}
+        y={110}
         width={710}
         label="The handshake"
         size={50}
@@ -2051,7 +2051,7 @@ const ActThree = ({frame}: {frame: number}) => {
         start={auditStart}
         end={actFrames[2] - 8}
         x={1052}
-        y={126}
+        y={110}
         width={710}
         label="The record"
         size={50}
