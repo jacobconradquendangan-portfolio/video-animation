@@ -2144,6 +2144,7 @@ const ActFour = ({frame}: {frame: number}) => {
   ];
   const outroTagline = ease(frame, logoStart + 42, 26);
   const outroFooter = ease(frame, logoStart + 56, 26);
+  const outroCredits = ease(frame, logoStart + 62, 26);
   const outroFloat = floatY(frame, 0.02, 3) * outro;
   const ciitFloat = floatY(frame, 0.03, 6) * outro;
   const ciitRotate = Math.sin(frame * 0.015) * 1.5 * outro;
@@ -2414,6 +2415,20 @@ const ActFour = ({frame}: {frame: number}) => {
               letterSpacing="3.2"
             >
               A FOUR-PART FIELD GUIDE
+            </text>
+          </g>
+          <g opacity={outroCredits}>
+            <text
+              x="960"
+              y="820"
+              textAnchor="middle"
+              fill={E.inkMuted}
+              fontFamily="Arial, Helvetica, sans-serif"
+              fontSize="18"
+              fontWeight="700"
+              letterSpacing="2.4"
+            >
+              Ken Escolar · Arzad Mariano · Jacob Quendangan · Ian Roncesvalles
             </text>
           </g>
         </g>
