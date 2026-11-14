@@ -391,28 +391,66 @@ const Notebook = ({
         <text x="368" y="424" fill={K.night} fontSize="13" fontFamily="Georgia, serif" fontStyle="italic">Measured with care.</text>
       </g>
 
-      {/* Torn Corner & Ink Wear Overlay (Matches reference bottom-left tear & top tape) */}
+      {/* Upgraded Vox-style fragile tear & paper degradation effect */}
       <g opacity={fragile}>
-        {/* Torn Bottom-Left Page Flap */}
+        {/* Torn Top-Right Corner Flap */}
+        <path d="M582 58 L649 78 L645 122 Q625 102 590 100 Z" fill="#D7C6A7" stroke={K.night} strokeWidth="2.5" filter={`url(#${prefix}-cutout-shadow)`} />
+        {/* Jagged Red Marker Tear Trace */}
         <path
-          d="M30 493 L42 442 L68 468 L94 452 L106 498 Q66 490 30 493 Z"
-          fill="#EAE0CE"
-          stroke={K.night}
-          strokeWidth="2.5"
-          strokeLinejoin="round"
-        />
-        {/* Torn Top-Right Corner */}
-        <path d="M582 58 649 78 645 122Q625 102 590 100Z" fill={K.paperShade} stroke={K.night} strokeWidth="2.5" />
-        {/* Ink Smudge */}
-        <path
-          d="M405 248q48 9 104-8"
+          d="M582 58 Q615 83 645 122"
           fill="none"
-          stroke="#52677D"
-          strokeWidth="12"
+          stroke={K.redDark}
+          strokeWidth="4.5"
           strokeLinecap="round"
-          opacity="0.25"
-          filter={`url(#${prefix}-ink-smudge)`}
+          pathLength="1"
+          strokeDasharray="1"
+          strokeDashoffset={1 - fragile}
+          filter={`url(#${prefix}-ink-bleed)`}
         />
+
+        {/* Torn Bottom-Left Corner Flap */}
+        <path d="M30 493 Q56 467 94 472 L101 501 Q62 491 30 493 Z" fill="#EAE0CE" stroke={K.night} strokeWidth="2.5" filter={`url(#${prefix}-cutout-shadow)`} />
+        <path
+          d="M30 493 Q63 488 101 501"
+          fill="none"
+          stroke={K.redDark}
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          pathLength="1"
+          strokeDasharray="1"
+          strokeDashoffset={1 - fragile}
+          filter={`url(#${prefix}-ink-bleed)`}
+        />
+
+        {/* Scattering Fibrous Paper Dust Particles */}
+        {Array.from({length: 8}, (_, i) => {
+          const angle = i * 0.8;
+          const dist = fragile * (35 + (i * 12) % 25);
+          return (
+            <rect
+              key={i}
+              x={590 + Math.cos(angle) * dist}
+              y={90 + Math.sin(angle) * dist}
+              width={3 + (i % 3)}
+              height={3 + (i % 2)}
+              fill={i % 2 === 0 ? K.redDark : K.night}
+              opacity={1 - fragile * 0.5}
+              transform={`rotate(${i * 25} 590 90)`}
+            />
+          );
+        })}
+
+        {/* Editorial Warning Stamp */}
+        <g transform="translate(192 258) rotate(-8 145 32)" filter={`url(#${prefix}-cutout-shadow)`}>
+          <rect x="0" y="0" width="290" height="64" rx="5" fill="#FFFCF5" fillOpacity=".86" stroke="#C6283D" strokeWidth="4.5" strokeDasharray="8 4" />
+          <text x="145" y="42" textAnchor="middle" fill="#C6283D" fontSize="22" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="2.5">
+            DEGRADED RECORD
+          </text>
+        </g>
+
+        {/* Ink Smudges & Bleeds */}
+        <path d="M400 236q48 9 104-8" fill="none" stroke="#52677D" strokeWidth="12" strokeLinecap="round" opacity="0.3" filter={`url(#${prefix}-ink-smudge)`} />
+        <path d="M434 253h79" fill="none" stroke="#52677D" strokeWidth="6" strokeLinecap="round" opacity="0.25" filter={`url(#${prefix}-ink-smudge)`} />
       </g>
 
       {/* Masking Tape Strips Holding Journal to Desk */}
@@ -626,8 +664,13 @@ const ActOne = ({frame}: {frame: number}) => {
   const archiveFade = 1 - ease(frame, fragileAt, 24);
   const timelineExit = ease(frame, bookAt - 28, 22);
   const growthDraw = sweep(frame, 12, 190);
-  const scatter = ease(frame, scatterAt, 30);
   const paperExit = ease(frame, clinicAt - 18, 24);
+  const transitProgress = ease(frame, scatterAt, 24);
+  const wornProgress = ease(frame, scatterAt + 42, 24);
+  const looseProgress = ease(frame, scatterAt + 102, 24);
+  const transitPaper = transitProgress * (1 - paperExit);
+  const wornPaper = wornProgress * (1 - paperExit);
+  const looseEntry = looseProgress * (1 - paperExit);
   const clinic = ease(frame, clinicAt, 28);
   const notebookStack = ease(frame, babyNotesAt, 14) * archiveFade * (1 - clinic);
   const thirdNotebook = ease(frame, thirdNotebookAt, 14) * archiveFade * (1 - clinic);
@@ -822,25 +865,82 @@ const ActOne = ({frame}: {frame: number}) => {
           </g>
         </g>
 
-        {/* Scattered Loose Slips (Cue 4) */}
-        <g opacity={scatter * (1 - paperExit)}>
+        {/* Loose records arrive in sequence with the narration. */}
+        <g
+          opacity={transitPaper}
+          transform={`translate(${interpolate(transitProgress, [0, 1], [1000, 520])} ${interpolate(transitProgress, [0, 1], [445, 480])})`}
+        >
           <g
-            transform={`translate(${interpolate(scatter, [0, 1], [980, 550])} ${interpolate(scatter, [0, 1], [450, 500])}) rotate(-11)`}
+            transform={`rotate(${interpolate(transitProgress, [0, 1], [4, -10])} 110 75)`}
             filter="url(#act1-cutout-shadow)"
           >
-            <rect x="0" y="0" width="196" height="130" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
-            <path d="M20 28h152M20 52h112M20 76h150" stroke="#94A3B8" strokeWidth="4" />
-            <circle cx="156" cy="99" r="11" fill={K.red} stroke={K.night} strokeWidth="2.5" />
+            <path d="M8 0H204L220 16V150H0V10Z" fill="#DCE7EA" stroke={K.night} strokeWidth="3" />
+            <path d="M0 10 8 0H204L220 16V142H0Z" fill="#FFFCF5" stroke={K.night} strokeWidth="2.5" />
+            <path d="M0 10 8 0V142H0Z" fill={K.blue} />
+            <rect x="8" y="0" width="212" height="150" fill="url(#act1-halftone)" opacity=".16" />
+            <text x="20" y="25" fill={K.blue} fontSize="11" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="1.1">
+              TRANSFER COPY / 04
+            </text>
+            <text x="20" y="53" fill={K.night} fontSize="19" fontFamily="Georgia, serif" fontWeight="700">
+              Visit summary
+            </text>
+            <path d="M20 65h178" stroke={K.gold} strokeWidth="3" strokeLinecap="round" />
+            <text x="20" y="88" fill="#475569" fontSize="10" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".8">
+              FILE ROUTE
+            </text>
+            <path d="M20 101h164M20 119h118" stroke="#94A3B8" strokeWidth="3" strokeLinecap="round" />
+            <g transform="translate(112 91) rotate(-8)">
+              <rect x="0" y="0" width="91" height="25" rx="3" fill="#FFFCF5" stroke={K.redDark} strokeWidth="2" strokeDasharray="5 3" />
+              <text x="45.5" y="17" textAnchor="middle" fill={K.redDark} fontSize="10" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".8">
+                IN TRANSIT
+              </text>
+            </g>
+            <path d="M193 0H220V28L208 22 201 29 193 21Z" fill="#E8DDCB" stroke={K.night} strokeWidth="1.5" />
+            <MaskingTape x={82} y={-11} rotate={-3} width={56} height={19} prefix="act1" />
           </g>
-          <g
-            transform={`translate(${interpolate(scatter, [0, 1], [1020, 390])} ${interpolate(scatter, [0, 1], [600, 680])}) rotate(8)`}
-            filter="url(#act1-cutout-shadow)"
-          >
-            <rect x="0" y="0" width="176" height="122" fill="#D9E5DD" stroke={K.night} strokeWidth="3" />
-            <text x="16" y="34" fill={K.night} fontSize="13" fontFamily="Arial, sans-serif" fontWeight="800">
+        </g>
+
+        <g
+          opacity={wornPaper}
+          transform={`translate(${interpolate(wornProgress, [0, 1], [900, 350])} ${interpolate(wornProgress, [0, 1], [560, 660])})`}
+        >
+          <g transform={`rotate(${interpolate(wornProgress, [0, 1], [18, 8])} 94 66)`} filter="url(#act1-cutout-shadow)">
+            <path d="M6 5 186 0 188 126 0 132Z" fill="#D9E5DD" stroke={K.night} strokeWidth="3" />
+            <path d="M0 0H174L188 14V126L0 132Z" fill="#F6F2E8" stroke={K.night} strokeWidth="2.5" />
+            <path d="M0 0h14v130H0Z" fill={K.green} />
+            <rect x="14" y="0" width="174" height="132" fill="url(#act1-halftone)" opacity=".18" />
+            <text x="25" y="25" fill={K.green} fontSize="10" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".7">
               VACCINE RECORD
             </text>
-            <path d="M16 54h136M16 78h136M16 100h92" stroke="#64748B" strokeWidth="3" />
+            <path d="M25 35h144" stroke={K.redDark} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="29" cy="57" r="3.5" fill={K.blue} />
+            <path d="M41 57h125" stroke="#94A3B8" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="29" cy="78" r="3.5" fill={K.gold} />
+            <path d="M41 78h113" stroke="#A8B0B5" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="29" cy="99" r="3.5" fill={K.red} />
+            <path d="M41 99h88" stroke="#B8B8AD" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M155 0h33v31l-13-7-8 9-12-8Z" fill="#E4D8C6" stroke={K.night} strokeWidth="1.5" />
+            <path d="M142 39q18 5 36-2" fill="none" stroke={K.redDark} strokeWidth="2.5" opacity=".65" filter="url(#act1-ink-smudge)" />
+          </g>
+        </g>
+
+        <g
+          opacity={looseEntry}
+          transform={`translate(${interpolate(looseProgress, [0, 1], [910, 690])} ${interpolate(looseProgress, [0, 1], [560, 648])})`}
+        >
+          <g transform={`rotate(${interpolate(looseProgress, [0, 1], [12, -7])} 78 54)`} filter="url(#act1-cutout-shadow)">
+            <path d="M0 0H156V108H0Z" fill="#FFF8E9" stroke={K.night} strokeWidth="2.5" />
+            <path d="M0 0h156v10H0Z" fill={K.gold} />
+            <text x="12" y="30" fill={K.redDark} fontSize="9" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".7">
+              LOOSE ENTRY
+            </text>
+            <text x="12" y="51" fill={K.night} fontSize="15" fontFamily="Georgia, serif" fontStyle="italic" fontWeight="700">
+              14 / 06
+            </text>
+            <path d="M12 66h130M12 83h83" stroke="#94A3B8" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="135" cy="84" r="7" fill={K.red} opacity=".78" />
+            <path d="M138 0h18v20" fill="none" stroke="#D8C9AA" strokeWidth="2" />
+            <MaskingTape x={55} y={-8} rotate={2} width={48} height={16} prefix="act1" />
           </g>
         </g>
 
@@ -850,26 +950,30 @@ const ActOne = ({frame}: {frame: number}) => {
           transform={`translate(${missingRecordX} ${Math.sin(frame * 0.045) * 2})`}
           filter="url(#act1-cutout-shadow)"
         >
-          <g transform="rotate(-6 850 670)">
-            <path d="M700 588h103l22 23h182v174H700Z" fill="#DCE8EE" stroke={K.night} strokeWidth="3.5" />
-            <rect x="718" y="613" width="270" height="145" fill="#FFFCF5" stroke={K.night} strokeWidth="2.5" />
-            <text x="738" y="644" fill={K.night} fontSize="16" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".5">
-              CHILD HEALTH RECORD
-            </text>
-            <circle cx="742" cy="675" r="5" fill={K.blue} />
-            <path d="M757 675h192" stroke="#94A3B8" strokeWidth="3" />
-            <circle cx="742" cy="699" r="5" fill={K.green} />
-            <path d="M757 699h192" stroke="#94A3B8" strokeWidth="3" />
-            <g transform="rotate(-7 850 725)">
-              <rect x="752" y="707" width="196" height="38" rx="3" fill="#C6283D" stroke={K.night} strokeWidth="2.5" />
-              <text x="850" y="733" textAnchor="middle" fill={K.paperLight} fontSize="17" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="1">
-                NOT FOUND
-              </text>
+          <g transform="translate(-350 -35)">
+            <g transform="translate(850 670) scale(1.7) translate(-850 -670)">
+              <g transform="rotate(-6 850 670)">
+                <path d="M700 588h103l22 23h182v174H700Z" fill="#DCE8EE" stroke={K.night} strokeWidth="3.5" />
+                <rect x="718" y="613" width="270" height="145" fill="#FFFCF5" stroke={K.night} strokeWidth="2.5" />
+                <text x="738" y="644" fill={K.night} fontSize="16" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing=".5">
+                  CHILD HEALTH RECORD
+                </text>
+                <circle cx="742" cy="675" r="5" fill={K.blue} />
+                <path d="M757 675h192" stroke="#94A3B8" strokeWidth="3" />
+                <circle cx="742" cy="699" r="5" fill={K.green} />
+                <path d="M757 699h192" stroke="#94A3B8" strokeWidth="3" />
+                <g transform="rotate(-7 850 725)">
+                  <rect x="752" y="707" width="196" height="38" rx="3" fill="#C6283D" stroke={K.night} strokeWidth="2.5" />
+                  <text x="850" y="733" textAnchor="middle" fill={K.paperLight} fontSize="17" fontFamily="Arial, sans-serif" fontWeight="800" letterSpacing="1">
+                    NOT FOUND
+                  </text>
+                </g>
+              </g>
             </g>
           </g>
         </g>
         <g opacity={missingRecord} fill="none" stroke={K.redDark} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M1005 680Q1040 667 1074 646" strokeDasharray="10 10" strokeDashoffset={interpolate(missingRecord, [0, 1], [60, 0])} />
+          <path d="M790 680Q925 650 1074 646" strokeDasharray="10 10" strokeDashoffset={interpolate(missingRecord, [0, 1], [60, 0])} />
           <path d="m1060 640 17 6-7 17" />
         </g>
 
@@ -1202,90 +1306,231 @@ const ActTwo = ({frame}: {frame: number}) => {
 };
 
 /* ============================================================================
- * ACT THREE — PARENT-CONTROLLED VISIT ("03 / PRIVACY BY DESIGN")
+ * ACT THREE — VOX EDITORIAL COLLAGE ("03 / A PARENT-CONTROLLED VISIT")
  * ============================================================================ */
 const ActThree = ({frame}: {frame: number}) => {
+  // Exact cue timings preserved from original ActThree
   const selectionStart = cueFrame(2, 4);
   const scanStart = cueFrame(2, 5);
   const qrStart = selectionStart + 160;
   const revokeStart = cueFrame(2, 6);
+
   const share = ease(frame, selectionStart, 24) * (1 - ease(frame, revokeStart + 12, 24));
   const scan = ease(frame, scanStart, 26);
   const revoke = ease(frame, revokeStart, 18);
   const revokeShatter = sweep(frame, revokeStart, revokeStart + 24);
-  const viewer = scan * (1 - revokeShatter);
-  const viewEnded = scan * revokeShatter;
-  const audit = ease(frame, cueFrame(2, 8), 18);
+  const revokeClinicFlow = ease(frame, revokeStart + 6, 18);
+  const revokeViewTransition = ease(frame, revokeStart + 18, 18);
+  const viewer = scan * (1 - revokeViewTransition);
+  const viewEnded = scan * revokeViewTransition;
+  const auditStart = cueFrame(2, 8);
+  const audit = ease(frame, auditStart, 18);
   const time = sweep(frame, qrStart, qrStart + 72);
   const countdown = Math.max(0, 60 - Math.floor(Math.max(0, frame - qrStart) / fps));
-  const tap = sweep(frame, revokeStart, revokeStart + 12);
+  const shareFlow = ease(frame, selectionStart, 20);
+  const qrFlow = ease(frame, qrStart, 20);
+  const scanFlow = ease(frame, scanStart, 20);
+  const revokeFlow = ease(frame, revokeStart, 18);
+  const flowDashOffset = (progress: number) => 48 * (1 - progress);
+
+  // Kinetic Typography & Editorial Motion Enhancements
+  const titleReveal = ease(frame, 4, 18);
+  const highlighterSwipe = sweep(frame, 14, 34);
 
   return (
-    <AbsoluteFill style={{background: 'linear-gradient(125deg, #18263B 0%, #233C4F 60%, #315B5C 100%)', color: K.paperLight, overflow: 'hidden'}}>
+    <AbsoluteFill
+      style={{
+        background: '#F9F6F0',
+        color: K.ink,
+        overflow: 'hidden',
+      }}
+    >
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          opacity: 0.18,
-          backgroundImage: 'radial-gradient(#B9D7D1 1px, transparent 1px)',
-          backgroundSize: '34px 34px',
+          backgroundImage:
+            'radial-gradient(circle at 84% 16%, rgba(255,141,161,0.22), transparent 36%), radial-gradient(circle at 14% 22%, rgba(74,144,226,0.14), transparent 36%)',
         }}
       />
-      <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
-        <VoxDefs prefix="act3" />
-        <path d="M0 785Q460 730 960 785t960-30v325H0Z" fill="#132035" />
-        <path d="M0 785Q460 730 960 785t960-30" fill="none" stroke="#728B88" strokeWidth="3" />
 
-        {/* Editorial Badge & Display Title */}
-        <g transform="translate(108 102)">
-          <rect x="0" y="0" width="440" height="44" rx="6" fill={K.gold} />
-          <text x="18" y="30" fill={K.night} fontFamily="Arial, sans-serif" fontSize="20" fontWeight="800" letterSpacing="2">
-            03 / A PARENT-CONTROLLED VISIT
+      <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
+        <defs>
+          {/* Hand-inked organic line wobble */}
+          <filter id="act3-ink-bleed" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+
+          {/* Zero-blur editorial cardboard cutout shadow */}
+          <filter id="act3-cutout-shadow" x="-15%" y="-15%" width="135%" height="135%">
+            <feDropShadow dx="7" dy="9" stdDeviation="0" floodColor="#090D16" floodOpacity="0.42" />
+          </filter>
+
+          {/* Newsprint halftone dot pattern */}
+          <pattern id="act3-halftone" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+            <circle cx="2.5" cy="2.5" r="1.2" fill="#111827" opacity="0.14" />
+          </pattern>
+
+          <pattern id="act3-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="9" stroke="#111827" strokeWidth="1.4" opacity="0.16" />
+          </pattern>
+
+          <pattern id="act3-ruled-paper" width="100" height="38" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="37" x2="100" y2="37" stroke="#CBD5E1" strokeWidth="1.5" opacity="0.55" />
+          </pattern>
+        </defs>
+
+          <rect x="0" y="0" width="1920" height="1080" fill="url(#act3-ruled-paper)" />
+
+          {/* Kraft-paper desk horizon */}
+          <path d="M0 845 Q445 815 912 842 T1920 832 V1080 H0 Z" fill="#EFE8DA" />
+          <path d="M0 845 Q445 815 912 842 T1920 832 V1080 H0 Z" fill="url(#act3-halftone)" opacity="0.12" />
+        <path
+            d="M0 840 Q445 810 912 837 T1920 827"
+          fill="none"
+            stroke="#D2C6B2"
+            strokeWidth="2.5"
+        />
+
+        {/* ===================================================================
+         * EDITORIAL HEADER & KINETIC HIGHLIGHTER SWIPE
+         * =================================================================== */}
+        <g opacity={titleReveal} transform={`translate(108 ${96 + (1 - titleReveal) * 16})`}>
+          {/* Dark editorial section badge */}
+          <rect x="0" y="0" width="465" height="44" rx="6" fill="#232B35" filter="url(#act3-cutout-shadow)" />
+          <text
+            x="18"
+            y="29"
+            fill="#F8F9FA"
+            fontFamily="Arial, Helvetica, sans-serif"
+            fontSize="19"
+            fontWeight="800"
+            letterSpacing="2.2"
+          >
+            <tspan fill={K.gold}>03 / </tspan>
+            A PARENT-CONTROLLED VISIT
           </text>
-          <text x="0" y="138" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="77" fontWeight="700">
+
+          {/* Angled gold highlighter behind the second headline line */}
+          <g transform="translate(-12 162) rotate(-1.4)">
+            <path
+              d="M4 8 Q360 2 720 6 L728 74 Q360 78 8 72 Z"
+              fill={K.gold}
+              opacity="0.88"
+              filter="url(#act3-ink-bleed)"
+              style={{
+                clipPath: `inset(0 ${(1 - highlighterSwipe) * 100}% 0 0)`,
+              }}
+            />
+          </g>
+
+          <text x="0" y="138" fill="#1D242B" fontFamily="Georgia, serif" fontSize="82" fontWeight="700" letterSpacing="-1.5">
             One visit.
           </text>
-          <text x="2" y="212" fill={K.paperLight} fontFamily="Georgia, serif" fontSize="77" fontWeight="700">
+          <text x="2" y="218" fill="#1D242B" fontFamily="Georgia, serif" fontSize="82" fontWeight="700" letterSpacing="-1.5">
             Only what’s needed.
           </text>
         </g>
 
-        <g transform="translate(135 452) scale(0.94)">
-          <ParentAndChild x={0} y={0} scale={1.04} coat={K.red} childCoat={K.gold} prefix="act3" />
+        {/* ===================================================================
+         * PARENT & CHILD CHARACTER (With Vox Print Offset & Ink Contours)
+         * =================================================================== */}
+        <g transform="translate(-60 282)">
+          <circle cx="280" cy="298" r="164" fill="#EAF1F7" />
+          <g transform={`translate(168 ${112 + Math.sin(frame * 0.08) * 3})`}>
+            <ParentAndChild x={0} y={0} scale={1.12} coat={K.red} childCoat={K.gold} prefix="act3" />
+          </g>
         </g>
 
-        <path
-          d="M300 650C480 590 618 620 771 540s120-140 221-135"
-          fill="none"
-          stroke={K.gold}
-          strokeWidth="4"
-          strokeDasharray="7 15"
-          opacity="0.75"
-        />
-        <path d="M1330 340v426" stroke={K.blueLight} strokeWidth="2" strokeDasharray="5 12" opacity="0.42" />
-        <text x="1390" y="325" fill={K.blueLight} fontFamily="Arial, sans-serif" fontSize="14" fontWeight="800" letterSpacing="2">
-          CLINICIAN VIEW
-        </text>
+        {/* Cue-driven broken-line steps: share, QR, clinician, revoke-to-clinic, audit. */}
+        <g fill="none" stroke={K.blue} strokeWidth="4.5" strokeDasharray="10 12" strokeLinecap="round" filter="url(#act3-ink-bleed)">
+          <path
+            d="M310 645 C390 610 470 580 568 555"
+            strokeDashoffset={flowDashOffset(shareFlow)}
+            opacity={shareFlow * (1 - revokeShatter)}
+          />
+          <path
+            d="M872 520 C900 500 925 480 952 470"
+            strokeDashoffset={flowDashOffset(qrFlow)}
+            opacity={qrFlow * (1 - revokeShatter)}
+          />
+          <path
+            d="M1244 535 C1324 525 1380 540 1465 540"
+            strokeDashoffset={flowDashOffset(scanFlow)}
+            opacity={scanFlow * (1 - revokeShatter)}
+          />
+          <path
+            d="M324 620 C470 660 635 715 807 690"
+            strokeDashoffset={flowDashOffset(revokeFlow)}
+            opacity={revokeFlow}
+          />
+          <path
+            d="M1112 690 C1240 682 1360 675 1465 700"
+            strokeDashoffset={flowDashOffset(revokeClinicFlow)}
+            opacity={revokeClinicFlow}
+          />
+          <path
+            d="M1465 540 C1360 515 1270 500 1179 510"
+            strokeDashoffset={flowDashOffset(audit)}
+            opacity={audit}
+          />
+        </g>
 
-        {/* Share Modal Cutout */}
-        <g opacity={share} transform={`translate(${interpolate(share, [0, 1], [-32, 0])} 0) rotate(-2 716 514)`} filter="url(#act3-cutout-shadow)">
-          <rect x="570" y="360" width="292" height="308" rx="18" fill={K.night} />
-          <rect x="580" y="370" width="272" height="288" rx="14" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
-          <text x="605" y="412" fill={K.night} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800">
+        {/* Editorial Divider & Clinician Zone Label */}
+        <path d="M1340 315 V775" stroke={K.blue} strokeWidth="2.5" strokeDasharray="6 12" opacity="0.4" />
+        <g transform="translate(1385 292)" filter="url(#act3-cutout-shadow)">
+          <rect x="0" y="0" width="225" height="32" fill="#E4EFFA" stroke={K.blue} strokeWidth="2" />
+          <text
+            x="112"
+            y="21"
+            textAnchor="middle"
+            fill={K.blue}
+            fontFamily="Arial, sans-serif"
+            fontSize="13"
+            fontWeight="800"
+            letterSpacing="2.2"
+          >
+            CLINICIAN VIEW
+          </text>
+        </g>
+
+        {/* ===================================================================
+         * 1. GRANULAR CONSENT CHECKLIST CUTOUT ("CHOOSE TO SHARE")
+         * =================================================================== */}
+        <g
+          opacity={share}
+          transform={`translate(${interpolate(share, [0, 1], [-36, 0])} 0) rotate(-2.5 716 514)`}
+          filter="url(#act3-cutout-shadow)"
+        >
+          {/* Crisp Paper Card Base */}
+          <rect x="568" y="352" width="304" height="326" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
+          <rect x="568" y="352" width="304" height="326" fill="url(#act3-halftone)" opacity="0.25" />
+
+          {/* Header Bar */}
+          <rect x="568" y="352" width="304" height="48" fill={K.night} />
+          <text x="594" y="382" fill={K.gold} fontFamily="Arial, sans-serif" fontSize="14" fontWeight="800" letterSpacing="1.8">
             CHOOSE TO SHARE
           </text>
+
+          {/* Masking Tape Anchor */}
+          <g transform="translate(682 338) rotate(2)">
+            <rect width="78" height="24" fill="#EFE4C8" opacity="0.9" stroke={K.night} strokeWidth="1" />
+          </g>
+
+          {/* Interactive Checkboxes */}
           {['Growth chart', 'Allergy summary', 'Vaccinations'].map((label, i) => {
             const check = ease(frame, selectionStart + 18 + i * 24, 12);
-            const y = 450 + i * 57;
+            const y = 432 + i * 58;
             return (
               <g key={label}>
-                <rect x="605" y={y} width="22" height="22" fill="#FFFCF5" stroke={K.night} strokeWidth="2.5" />
-                <rect x="605" y={y} width="22" height="22" fill={K.red} opacity={check} />
+                <rect x="596" y={y} width="24" height="24" fill="#FFFCF5" stroke={K.night} strokeWidth="3" />
+                <rect x="596" y={y} width="24" height="24" fill={K.red} opacity={check} />
                 <path
-                  d={`M610 ${y + 11}l6 6 10-13`}
+                  d={`M601 ${y + 12} l6 6 11-14`}
                   fill="none"
                   stroke={K.night}
-                  strokeWidth="3"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   pathLength="1"
@@ -1293,133 +1538,214 @@ const ActThree = ({frame}: {frame: number}) => {
                   strokeDashoffset={1 - check}
                   opacity={check}
                 />
-                <text x="648" y={y + 18} fill={K.ink} fontFamily="Arial, sans-serif" fontSize="20" fontWeight="600">
+                <text x="638" y={y + 19} fill={K.ink} fontFamily="Georgia, serif" fontSize="20" fontWeight="700">
                   {label}
                 </text>
+                <line x1="596" y1={y + 36} x2="842" y2={y + 36} stroke="#CBD5E1" strokeWidth="1.5" />
               </g>
             );
           })}
-          <g transform={`translate(716 636) scale(${1 - 0.07 * Math.sin(tap * Math.PI)}) translate(-716 -636)`}>
-            <rect x="605" y="615" width="222" height="36" fill={K.redDark} stroke={K.night} strokeWidth="2.5" />
-            <text x="716" y="639" textAnchor="middle" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800">
-              Revoke access
-            </text>
-          </g>
+
         </g>
 
-        {/* Time-Limited QR Token Card */}
-        <g transform={`translate(950 ${390 + floatY(frame, 0.04, 8)}) rotate(-3 135 135)`} filter="url(#act3-cutout-shadow)">
+        {/* ===================================================================
+         * 2. TIME-LIMITED QR TOKEN STAMP CARD (With Shatter Revocation)
+         * =================================================================== */}
+        <g
+          transform={`translate(952 ${384 + floatY(frame, 0.04, 7)}) rotate(-2 142 142)`}
+          filter="url(#act3-cutout-shadow)"
+        >
           <g opacity={ease(frame, qrStart, 20) * (1 - revokeShatter)}>
-            <rect x="0" y="0" width="285" height="285" fill="#FFFCF5" stroke={K.night} strokeWidth="3.5" />
-            <rect x="0" y="0" width="285" height="30" fill="#E4EFFA" stroke={K.night} strokeWidth="2" />
-            <text x="15" y="19" fill={K.night} fontFamily="Arial, sans-serif" fontSize="10" fontWeight="800" letterSpacing="1">
+            {/* Sharp Paper Card */}
+            <rect x="0" y="0" width="292" height="296" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
+            <rect x="0" y="0" width="292" height="36" fill="#E4EFFA" stroke={K.night} strokeWidth="3" />
+
+            <text x="14" y="23" fill={K.night} fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.2">
               TIME-LIMITED TOKEN
             </text>
-            <text x="222" y="19" textAnchor="end" fill={K.ink} fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800">
+            <text x="234" y="23" textAnchor="end" fill={K.redDark} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800">
               {countdown}s
             </text>
-            <circle cx="258" cy="14" r="8" fill="none" stroke={K.paperShade} strokeWidth="2" />
+
+            {/* Countdown Ring */}
+            <circle cx="266" cy="18" r="9" fill="none" stroke="#CBD5E1" strokeWidth="2.5" />
             <circle
-              cx="258"
-              cy="14"
-              r="8"
+              cx="266"
+              cy="18"
+              r="9"
               fill="none"
               stroke={K.redDark}
-              strokeWidth="2.5"
-              strokeDasharray="50.3"
-              strokeDashoffset={50.3 * (1 - time)}
-              transform="rotate(-90 258 14)"
+              strokeWidth="3"
+              strokeDasharray="56.5"
+              strokeDashoffset={56.5 * (1 - time)}
+              transform="rotate(-90 266 18)"
             />
-            <g transform="translate(27 34)">
-              <QrMark size={231} progress={time * (1 - revokeShatter)} />
+
+            {/* Crisp QR Matrix */}
+            <g transform="translate(29 44)">
+              <QrMark size={234} progress={time * (1 - revokeShatter)} />
             </g>
-            <MaskingTape x={102} y={-12} rotate={2} width={80} height={24} prefix="act3" />
-            <text x="142" y="318" fill={K.paper} textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800" letterSpacing="2">
-              ONE-TIME VISIT TOKEN
-            </text>
+
+            {/* Top Masking Tape Strip */}
+            <g transform="translate(106 -13) rotate(-3)">
+              <rect width="80" height="24" fill="#EFE4C8" opacity="0.92" stroke={K.night} strokeWidth="1" />
+            </g>
+
+            {/* Editorial Caption Stamp Below QR */}
+            <g transform="translate(16 312)">
+              <rect x="0" y="0" width="260" height="32" fill={K.night} />
+              <text
+                x="130"
+                y="21"
+                fill={K.gold}
+                textAnchor="middle"
+                fontFamily="Arial, sans-serif"
+                fontSize="13"
+                fontWeight="800"
+                letterSpacing="2"
+              >
+                ONE-TIME VISIT TOKEN
+              </text>
+            </g>
           </g>
+
+          {/* Confetti / Halftone Pixel Shatter on Revoke */}
           <g>
-            {Array.from({length: 20}, (_, i) => {
-              const x = 43 + ((i * 47) % 192);
-              const y = 43 + ((i * 71) % 192);
+            {Array.from({length: 24}, (_, i) => {
+              const x = 40 + ((i * 47) % 205);
+              const y = 40 + ((i * 71) % 205);
               const angle = i * 2.4;
-              const travel = 76 * revokeShatter;
+              const travel = 88 * revokeShatter;
               return (
                 <rect
                   key={i}
                   x={x + Math.cos(angle) * travel}
                   y={y + Math.sin(angle) * travel}
-                  width={4 + (i % 3)}
-                  height={4 + (i % 3)}
-                  fill={i % 2 === 0 ? K.red : K.blue}
+                  width={6 + (i % 4)}
+                  height={6 + (i % 4)}
+                  fill={i % 3 === 0 ? K.redDark : i % 3 === 1 ? K.gold : K.blue}
+                  stroke={K.night}
+                  strokeWidth="1.5"
                   opacity={Math.sin(revokeShatter * Math.PI)}
+                  transform={`rotate(${i * 35} ${x + Math.cos(angle) * travel} ${y + Math.sin(angle) * travel})`}
                 />
               );
             })}
           </g>
         </g>
 
-        {/* Clinician View Card */}
-        <g opacity={viewer} transform={`translate(${interpolate(scan, [0, 1], [1800, 1470])} 356)`} filter="url(#act3-cutout-shadow)">
-          <rect x="0" y="0" width="336" height="376" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
-          <rect x="0" y="0" width="336" height="65" fill={K.blue} stroke={K.night} strokeWidth="3" />
-          <circle cx="42" cy="33" r="13" fill={K.gold} stroke={K.night} strokeWidth="2.5" />
-          <text x="69" y="40" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="16" fontWeight="800">
+        {/* ===================================================================
+         * 3. CLINICIAN VIEW-ONLY DOSSIER CARD (And Revoked Stamp State)
+         * =================================================================== */}
+        <g opacity={viewer} transform={`translate(${interpolate(scan, [0, 1], [1820, 1465])} 346)`} filter="url(#act3-cutout-shadow)">
+          <rect x="0" y="0" width="348" height="390" fill="#FFFCF5" stroke={K.night} strokeWidth="4" />
+          <rect x="0" y="0" width="348" height="390" fill="url(#act3-halftone)" opacity="0.22" />
+
+          {/* Header Bar */}
+          <rect x="0" y="0" width="348" height="66" fill={K.blue} stroke={K.night} strokeWidth="3.5" />
+          <circle cx="42" cy="33" r="14" fill={K.gold} stroke={K.night} strokeWidth="2.5" />
+          <text x="70" y="40" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="17" fontWeight="800" letterSpacing="1">
             PEDIATRIC VISIT
           </text>
+
+          {/* Top Masking Tape */}
+          <g transform="translate(132 -12) rotate(2)">
+            <rect width="84" height="24" fill="#EFE4C8" opacity="0.92" stroke={K.night} strokeWidth="1" />
+          </g>
+
           <text x="28" y="112" fill={K.night} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
             VIEW-ONLY RECORD
           </text>
+
           {['Growth chart', 'Allergy summary', 'Vaccination record'].map((item, i) => (
             <g key={item}>
-              <path d={`M30 ${153 + i * 52}h18`} stroke={K.redDark} strokeWidth="5" strokeLinecap="round" />
-              <text x="65" y={160 + i * 52} fill={K.ink} fontFamily="Arial, sans-serif" fontSize="17" fontWeight="600">
+              <path
+                d={`M30 ${154 + i * 54} h18`}
+                stroke={K.redDark}
+                strokeWidth="5"
+                strokeLinecap="round"
+                filter="url(#act3-ink-bleed)"
+              />
+              <text x="64" y={161 + i * 54} fill={K.ink} fontFamily="Georgia, serif" fontSize="19" fontWeight="700">
                 {item}
               </text>
-              <path d={`M28 ${180 + i * 52}h279`} stroke="#D8CCB7" strokeWidth="2" />
+              <line x1="28" y1={182 + i * 54} x2="318" y2={182 + i * 54} stroke="#CBD5E1" strokeWidth="2" />
             </g>
           ))}
-          <text x="28" y="338" fill={K.redDark} fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800">
+
+          {/* Bottom Expiration Banner */}
+          <rect x="24" y="324" width="300" height="38" fill="#FEE2E2" stroke={K.redDark} strokeWidth="2" />
+          <text x="174" y="348" textAnchor="middle" fill={K.redDark} fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800" letterSpacing="1">
             EXPIRES WHEN THE VISIT ENDS
           </text>
         </g>
 
-        <g opacity={viewEnded} transform="translate(1470 356)" filter="url(#act3-cutout-shadow)">
-          <rect x="0" y="0" width="336" height="376" fill={K.night} stroke={K.paperLight} strokeWidth="3" />
-          <circle cx="168" cy="142" r="34" fill={K.red} />
+        {/* Revoked Access Lockout Card */}
+        <g opacity={viewEnded} transform="translate(1465 346)" filter="url(#act3-cutout-shadow)">
+          <rect x="0" y="0" width="348" height="390" fill="#E4EFFA" stroke={K.blue} strokeWidth="3.5" />
+          <rect x="0" y="0" width="348" height="390" fill="url(#act3-halftone)" opacity="0.2" />
+
+          <circle cx="174" cy="144" r="38" fill={K.redDark} stroke={K.blue} strokeWidth="3" />
           <path
-            d="M155 140v-8a13 13 0 0 1 26 0v8m-31 0h36v27h-36z"
+            d="M160 142 v-9 a14 14 0 0 1 28 0 v9 m-34 0 h40 v30 h-40 z"
             fill="none"
-            stroke={K.paperLight}
+            stroke="#FFFCF5"
             strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <text x="168" y="216" textAnchor="middle" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="17" fontWeight="800">
-            ACCESS REVOKED
-          </text>
-          <text x="168" y="244" textAnchor="middle" fill="#C5D5CA" fontFamily="Arial, sans-serif" fontSize="14">
+
+          {/* Diagonal Red Stamp */}
+          <g transform="translate(174 226) rotate(-4)">
+            <rect x="-126" y="-22" width="252" height="42" fill="none" stroke={K.redDark} strokeWidth="3.5" />
+            <text
+              x="0"
+              y="6"
+              textAnchor="middle"
+              fill={K.redDark}
+              fontFamily="Arial, sans-serif"
+              fontSize="19"
+              fontWeight="800"
+              letterSpacing="2.5"
+            >
+              ACCESS REVOKED
+            </text>
+          </g>
+
+          <text x="174" y="282" textAnchor="middle" fill="#475569" fontFamily="Georgia, serif" fontStyle="italic" fontSize="16">
             This visit can no longer view the record.
           </text>
         </g>
 
-        <g opacity={revoke} transform="translate(968 738)">
-          <circle cx="0" cy="0" r="12" fill={K.red} />
-          <path d="M-4-4 4 4M4-4-4 4" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" />
-          <text x="24" y="5" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="15" fontWeight="800">
-            Token revoked
+        {/* ===================================================================
+         * 4. REVOCATION & IMMUTABLE AUDIT LOG CALLOUTS
+         * =================================================================== */}
+        <g opacity={revoke} transform="translate(827 690) scale(1.4)" filter="url(#act3-cutout-shadow)">
+          <rect x="-14" y="-20" width="218" height="40" fill={K.redDark} stroke={K.night} strokeWidth="2.5" />
+          <circle cx="8" cy="0" r="11" fill={K.paperLight} />
+          <path d="M4-4 12 4 M12-4 4 4" stroke={K.redDark} strokeWidth="3" strokeLinecap="round" />
+          <text x="30" y="5" fill={K.paperLight} fontFamily="Arial, sans-serif" fontSize="16" fontWeight="800" letterSpacing="1">
+            REVOKE ACCESS
           </text>
         </g>
 
-        <g opacity={audit} transform="translate(1400 800)">
-          <path d="M0 0h340M0 38h290M0 76h320" stroke="#7EA09D" strokeWidth="3" />
-          {[0, 1, 2].map((n) => (
-            <g key={n} opacity={ease(frame, cueFrame(2, 8) + n * 9, 12)}>
-              <circle cx="6" cy={n * 38} r="6" fill={K.gold} />
-              <circle cx="310" cy={n * 38} r="6" fill={K.green} />
-            </g>
-          ))}
-          <text x="0" y="118" fill="#C5D5CA" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
+        <g opacity={audit} transform="translate(760 446) scale(1.15)" filter="url(#act3-cutout-shadow)">
+          <rect x="-16" y="-18" width="380" height="146" fill="#E4EFFA" stroke={K.blue} strokeWidth="2.5" />
+          <rect x="-16" y="-18" width="380" height="146" fill="url(#act3-halftone)" opacity="0.22" />
+          {[0, 1, 2].map((n) => {
+            const rowReveal = ease(frame, cueFrame(2, 8) + n * 9, 12);
+            return (
+              <g key={n} opacity={rowReveal} transform={`translate(0 ${n * 34})`}>
+                <line x1="0" y1="8" x2="340" y2="8" stroke="#94A3B8" strokeWidth="2" strokeDasharray="4 6" />
+                <circle cx="8" cy="8" r="6" fill={K.gold} />
+                <text x="26" y="13" fill={K.night} fontFamily="Arial, sans-serif" fontSize="12" fontWeight="700">
+                  {['08:44 AM · QR SCANNED', '08:45 AM · RECORD VIEWED', '09:02 AM · ACCESS REVOKED'][n]}
+                </text>
+                <circle cx="328" cy="8" r="6" fill={n === 2 ? K.red : K.green} />
+              </g>
+            );
+          })}
+          <text x="0" y="114" fill={K.blue} fontFamily="Arial, sans-serif" fontSize="13" fontWeight="800" letterSpacing="2">
             EVERY VIEW, RECORDED
           </text>
         </g>
