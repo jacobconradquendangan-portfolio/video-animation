@@ -13,15 +13,15 @@ import {
 import {actFrames, acts, durationInFrames} from './script';
 
 const K = {
-  night: '#17243A',
-  blue: '#304A62',
-  blueLight: '#7FAEB3',
-  paper: '#F3E7CF',
-  paperLight: '#FFF8E9',
-  paperShade: '#D9C6A7',
-  ink: '#19283B',
-  red: '#E95C47',
-  redDark: '#B7463C',
+  night: '#111827',
+  blue: '#4A90E2',
+  blueLight: '#87BCEB',
+  paper: '#F3F6F9',
+  paperLight: '#F8F9FA',
+  paperShade: '#D7DEE7',
+  ink: '#111111',
+  red: '#FF8DA1',
+  redDark: '#D96A81',
   gold: '#EDB85E',
   green: '#86A989',
   sky: '#B9D7D1',
@@ -79,7 +79,7 @@ const ParentAndChild = ({
   </g>
 );
 
-const Notebook = ({frame, openAt, memoryAt}: {frame: number; openAt: number; memoryAt: number}) => {
+const Notebook = ({frame, openAt, memoryAt, fragileAt}: {frame: number; openAt: number; memoryAt: number; fragileAt: number}) => {
   const opening = spring({
     frame: Math.max(0, frame - openAt),
     fps,
@@ -90,13 +90,15 @@ const Notebook = ({frame, openAt, memoryAt}: {frame: number; openAt: number; mem
     fps,
     config: {damping: 13, stiffness: 125, mass: .8},
   });
+  const fragile = ease(frame, fragileAt, 20);
   const pageLift = (1 - opening) * 55;
   return (
-    <g transform={`translate(685 270) rotate(-4 340 260)`}>
+    <g transform={`translate(685 245) scale(1.08) rotate(-4 340 260)`}>
       <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" fill="#B7966B" />
-      <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill={K.paperLight} />
-      <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill={K.paper} transform={`translate(0 ${pageLift})`} />
-      <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" fill={K.paperLight} />
+      <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#B7966B" transform="translate(8 8)" />
+      <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#FFFCF5" stroke="#D9C6A7" strokeWidth="2" />
+      <path d="M337 87 580 58Q631 52 649 78V494Q631 470 580 475L337 505Z" fill="#F4EBD8" transform={`translate(0 ${pageLift})`} />
+      <path d="M30 80Q50 54 100 59L337 87V505L94 472Q43 468 30 493Z" fill="#FFFCF5" stroke="#D9C6A7" strokeWidth="2" />
       <path d="M337 87V505" stroke={K.redDark} strokeWidth="9" />
       <path d="M54 120 306 145M54 164 306 189M54 208 306 233M54 252 306 277M54 296 306 321M54 340 306 365M54 384 306 409" stroke="#C9B493" strokeWidth="3" opacity=".75" />
       <path d="M365 130 614 102M365 175 614 147M365 220 614 192M365 265 614 237M365 310 614 282M365 355 614 327M365 400 614 372" stroke="#C9B493" strokeWidth="3" opacity=".75" />
@@ -109,6 +111,15 @@ const Notebook = ({frame, openAt, memoryAt}: {frame: number; openAt: number; mem
         <path d="M43 89q5-35 36-35t37 35" fill={K.blueLight} />
         <path d="M19 108h84" stroke={K.red} strokeWidth="3" strokeLinecap="round" />
         <text x="112" y="113" fill={K.redDark} fontSize="10" fontFamily="Arial" fontWeight="700">01</text>
+      </g>
+      <g opacity={fragile}>
+        <path d="M582 58 649 78 645 122Q625 102 590 100Z" fill={K.paperShade} />
+        <path d="M582 58Q615 83 645 122" fill="none" stroke={K.red} strokeWidth="4" strokeDasharray="1" pathLength="1" strokeDashoffset={1 - fragile} />
+        <path d="M590 100Q615 82 645 122" fill="none" stroke="#BDAA8A" strokeWidth="2" />
+        <path d="M30 493Q56 467 94 472L101 501Q62 491 30 493Z" fill="#EEE3D2" />
+        <path d="M30 493Q63 488 101 501" fill="none" stroke="#BDAA8A" strokeWidth="2" />
+        <path d="M400 236q48 9 104-8" fill="none" stroke="#52677D" strokeWidth="10" strokeLinecap="round" opacity=".25" filter="url(#act-one-ink-smudge)" />
+        <path d="M434 253h79" fill="none" stroke="#52677D" strokeWidth="5" strokeLinecap="round" opacity=".2" filter="url(#act-one-ink-smudge)" />
       </g>
       <path d="M424 308q27-50 55 0t55 0 53 0" fill="none" stroke={K.red} strokeWidth="5" strokeLinecap="round" />
       <path d="M454 323h151" stroke="#BDAA8A" strokeWidth="2" />
@@ -127,7 +138,7 @@ const GrowthLine = ({progress}: {progress: number}) => (
   </g>
 );
 
-const TinyMemory = ({x, y, rotate, color, kind, caption}: {x: number; y: number; rotate: number; color: string; kind: number; caption?: string}) => (
+const TinyMemory = ({x, y, rotate, color, kind, caption, completed}: {x: number; y: number; rotate: number; color: string; kind: number; caption?: string; completed?: number}) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate} 118 92)`}>
     <rect x="0" y="0" width="236" height="184" rx="4" fill={K.paperLight} />
     <rect x="13" y="13" width="210" height="127" fill={color} />
@@ -154,6 +165,12 @@ const TinyMemory = ({x, y, rotate, color, kind, caption}: {x: number; y: number;
     <path d="M26 158H172" stroke={K.paperShade} strokeWidth="3" />
     <circle cx="198" cy="157" r="5" fill={K.red} />
     {caption && <text x="26" y="176" fill={K.ink} fontFamily="Georgia" fontSize="14" fontStyle="italic">{caption}</text>}
+    {completed !== undefined && (
+      <g opacity={completed} transform="translate(202 28)">
+        <circle r="13" fill={K.green} />
+        <path d="m-6 0 4 4 8-9" fill="none" stroke={K.paperLight} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    )}
   </g>
 );
 
@@ -190,6 +207,7 @@ const QrMark = ({size, progress}: {size: number; progress: number}) => {
 const ActOne = ({frame}: {frame: number}) => {
   const bookAt = cueFrame(0, 1);
   const memoryAt = cueFrame(0, 2);
+  const fragileAt = cueFrame(0, 3);
   const scatterAt = cueFrame(0, 4);
   const clinicAt = cueFrame(0, 5);
   const open = ease(frame, bookAt, 34);
@@ -199,18 +217,28 @@ const ActOne = ({frame}: {frame: number}) => {
   const clinic = ease(frame, clinicAt, 28);
   const redLine = sweep(frame, cueFrame(0, 6), cueFrame(0, 7));
   const notebookFade = 1 - ease(frame, clinicAt, 26);
+  const immunization = open * (1 - ease(frame, scatterAt, 24)) * (1 - clinic);
+  const warning = ease(frame, cueFrame(0, 6), 22);
 
   return (
-    <AbsoluteFill style={{background: 'linear-gradient(120deg, #17243A 0%, #243A52 58%, #40556A 100%)', color: K.paperLight, overflow: 'hidden'}}>
-      <div style={{position: 'absolute', inset: 0, opacity: .21, backgroundImage: 'radial-gradient(#F3E7CF 1px, transparent 1px)', backgroundSize: '28px 28px'}} />
+    <AbsoluteFill style={{background: '#F8F9FA', color: K.ink, overflow: 'hidden'}}>
+      <div style={{position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(112deg, rgba(74,144,226,.10), transparent 38%), radial-gradient(ellipse at 84% 38%, rgba(255,141,161,.14), transparent 31%), repeating-linear-gradient(5deg, transparent 0 62px, rgba(124,142,159,.035) 63px 64px)'}} />
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
-        <path d="M0 790Q415 742 830 785T1920 768V1080H0Z" fill="#132035" opacity=".76" />
-        <path d="M0 786Q415 738 830 781T1920 764" fill="none" stroke="#718493" strokeWidth="3" />
-        <text x="110" y="146" fill={K.gold} fontSize="20" fontFamily="Arial" fontWeight="700" letterSpacing="4">A CHILDHOOD, ONE PAGE AT A TIME</text>
-        <text x="104" y="262" fill={K.paperLight} fontSize="100" fontFamily="Georgia" fontWeight="700">Six years.</text>
-        <text x="112" y="318" fill="#B9C9C6" fontSize="25" fontFamily="Arial">A thousand little things to remember.</text>
+        <defs>
+          <filter id="act-one-ink-smudge">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+          <filter id="act-one-paper-shadow" x="-30%" y="-30%" width="160%" height="170%">
+            <feGaussianBlur stdDeviation="12" />
+          </filter>
+        </defs>
+        <path d="M0 790Q415 742 830 785T1920 768V1080H0Z" fill="#E8EDF3" />
+        <path d="M0 786Q415 738 830 781T1920 764" fill="none" stroke="#B8C6D4" strokeWidth="3" />
+        <text x="110" y="146" fill={K.blue} fontSize="20" fontFamily="Arial" fontWeight="700" letterSpacing="4">A CHILDHOOD, ONE PAGE AT A TIME</text>
+        <text x="104" y="262" fill={K.ink} fontSize="100" fontFamily="Georgia" fontWeight="700">Six years.</text>
+        <text x="112" y="318" fill="#52677D" fontSize="25" fontFamily="Arial">A thousand little things to remember.</text>
         <g opacity={1 - timelineExit} transform={`translate(${105 - timelineExit * 42} ${397 - timelineExit * 18})`}>
-          <path d="M20 78H458" stroke="#72869A" strokeWidth="3" />
+          <path d="M20 78H458" stroke="#A9B8C7" strokeWidth="3" />
           {Array.from({length: 6}, (_, i) => {
             const x = 42 + i * 78;
             const rise = spring({frame: Math.max(0, frame - i * 12), fps, config: {damping: 14, stiffness: 110}});
@@ -218,39 +246,58 @@ const ActOne = ({frame}: {frame: number}) => {
             const pulse = 1 + Math.sin((frame - i * 8) * .06) * .035 * rise;
             return (
               <g key={i} opacity={Math.min(1, rise)} transform={`translate(${x} 78) scale(${pulse}) translate(${-x} -78)`}>
-                <circle cx={x} cy={78} r={r + 4} fill={K.paper} opacity=".12" />
+                <circle cx={x} cy={78} r={r + 4} fill={K.blue} opacity=".12" />
                 <circle cx={x} cy={78} r={r} fill={[K.red, K.gold, K.blueLight, K.green, K.lilac, K.red][i]} />
                 <circle cx={x} cy={78 - r - 15} r={8 + i} fill={K.paperShade} />
                 <path d={`M${x - 11} ${78-r-3}q11-17 22 0`} fill="none" stroke={K.paperLight} strokeWidth="5" strokeLinecap="round" />
-                <text x={x} y="135" textAnchor="middle" fill={K.paper} fontSize="13" fontFamily="Arial">{i === 0 ? 'newborn' : `${i} yr`}</text>
+                <text x={x} y="135" textAnchor="middle" fill={K.ink} fontSize="13" fontFamily="Arial">{i === 0 ? 'newborn' : `${i} yr`}</text>
               </g>
             );
           })}
         </g>
         <g opacity={open * notebookFade} transform={`translate(0 ${floatY(frame, .018, 4)})`}>
-          <Notebook frame={frame} openAt={bookAt} memoryAt={memoryAt} />
+          <ellipse cx="1048" cy="510" rx="370" ry="260" fill="#52677D" opacity=".14" filter="url(#act-one-paper-shadow)" />
+          <Notebook frame={frame} openAt={bookAt} memoryAt={memoryAt} fragileAt={fragileAt} />
+        </g>
+        <g opacity={immunization} transform={`translate(${1430 + floatY(frame + 20, .026, 3)} ${420 + floatY(frame, .024, 3)}) rotate(4 107 74) scale(1.12)`}>
+          <path d="M8 10h214v148H8Z" fill="#121C2B" opacity=".16" transform="translate(7 8)" filter="url(#act-one-paper-shadow)" />
+          <path d="M0 0h214v148H0Z" fill={K.paperLight} stroke="#CCD7E3" strokeWidth="3" />
+          <path d="M0 0h214v28H0Z" fill={K.blue} />
+          <text x="12" y="18" fill={K.paperLight} fontFamily="Arial" fontSize="10" fontWeight="700" letterSpacing=".4">PHILIPPINES / DOH</text>
+          <text x="14" y="48" fill={K.blue} fontFamily="Arial" fontSize="11" fontWeight="700">CHILD IMMUNIZATION RECORD</text>
+          <text x="15" y="67" fill="#52677D" fontFamily="Arial" fontSize="8" fontWeight="700">VACCINE / DATE / HEALTH CENTER</text>
+          <path d="M15 84h180M15 106h180M15 128h132" stroke="#B9C8D6" strokeWidth="3" />
+          <circle cx="185" cy="118" r="9" fill={K.red} />
+          <path d="m177 140 30-22 7 30Z" fill={K.paperShade} />
         </g>
         <g opacity={scatter * (1 - paperExit)}>
           <g transform={`translate(${interpolate(scatter, [0, 1], [980, 470]) + paperExit * 180} ${interpolate(scatter, [0, 1], [450, 390]) + floatY(frame, .05, 5) * scatter}) rotate(${interpolate(scatter, [0, 1], [0, -13]) + Math.sin(frame * .045) * 1.5 * scatter})`}>
             <path d="M0 0h196v130H0Z" fill={K.paper} />
             <path d="M20 28h152M20 49h112M20 72h150M20 96h89" stroke="#BDAA8A" strokeWidth="4" />
+            <path d="M174 0h22v24q-13-7-22-15Z" fill="#E2E8EF" />
+            <path d="M174 0q1 15 22 24" fill="none" stroke="#B8C6D4" strokeWidth="2" />
+            <path d="M34 59q31-8 56 1" fill="none" stroke="#52677D" strokeWidth="9" opacity=".2" strokeLinecap="round" filter="url(#act-one-ink-smudge)" />
             <circle cx="156" cy="99" r="11" fill={K.red} />
           </g>
           <g transform={`translate(${interpolate(scatter, [0, 1], [1090, 1360]) + paperExit * 180} ${interpolate(scatter, [0, 1], [520, 360]) + floatY(frame + 12, .05, 6) * scatter}) rotate(${interpolate(scatter, [0, 1], [0, 8]) + Math.sin(frame * .04 + 1) * 1.5 * scatter})`}>
             <path d="M0 0h170v120H0Z" fill="#D9E5DD" />
             <text x="18" y="35" fill={K.blue} fontSize="13" fontFamily="Arial" fontWeight="700">VACCINE RECORD</text>
             <path d="M18 53h132M18 75h132M18 97h88" stroke="#96AFA7" strokeWidth="3" />
+            <path d="M149 0h21v22q-9-5-21-13Z" fill="#C4D5CC" />
+            <path d="M149 0q4 13 21 22" fill="none" stroke="#91A99F" strokeWidth="2" />
           </g>
           <g transform={`translate(${interpolate(scatter, [0, 1], [1130, 1510]) + paperExit * 180} ${interpolate(scatter, [0, 1], [560, 540]) + floatY(frame + 23, .052, 6) * scatter}) rotate(${interpolate(scatter, [0, 1], [0, -7]) + Math.sin(frame * .047 + 2) * 1.5 * scatter})`}>
             <path d="M0 0h154v108H0Z" fill="#E9B85F" />
             <path d="M18 24h118M18 46h96M18 68h111" stroke="#A57D42" strokeWidth="3" />
+            <path d="M132 0h22v22q-9-5-22-13Z" fill="#F7D796" />
+            <path d="M132 0q4 13 22 22" fill="none" stroke="#D1A959" strokeWidth="2" />
             <circle cx="123" cy="83" r="9" fill={K.red} />
           </g>
         </g>
         <g opacity={clinic} transform={`translate(${interpolate(clinic, [0, 1], [120, -140])} 0) translate(1597 0) scale(1.18 1.05) translate(-1597 0)`}>
           <path d="M1420 355h354v365h-354Z" fill="#101D30" stroke="#7C8792" strokeWidth="4" />
           <path d="M1460 404h274M1460 448h210M1460 492h245" stroke="#728493" strokeWidth="4" strokeDasharray="8 10" />
-          <text x="1460" y="323" fill={K.paper} fontSize="18" fontFamily="Arial" fontWeight="700">CLINIC, 8:42 AM</text>
+          <text x="1460" y="323" fill={K.ink} fontSize="18" fontFamily="Arial" fontWeight="700">CLINIC, 8:42 AM</text>
           <g transform={`translate(1460 ${505 + floatY(frame, .045, 3)})`}>
             <ParentAndChild x={0} y={0} scale={.62} coat={K.blueLight} childCoat={K.gold} />
           </g>
@@ -262,6 +309,13 @@ const ActOne = ({frame}: {frame: number}) => {
         <path d="M90 828C310 798 520 858 720 826S1100 806 1290 832 1600 856 1840 816" fill="none" stroke={K.gold} strokeWidth="5" strokeDasharray="8 18" opacity={.42 * ease(frame, cueFrame(0, 6), 22)} />
         <path d="M104 828C316 797 520 856 720 825S1100 806 1290 832 1590 854 1830 820" fill="none" stroke={K.red} strokeWidth="8" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - redLine} />
         <circle cx={104 + 1720 * redLine} cy={828 - 15 * Math.sin(redLine * Math.PI * 2)} r="12" fill={K.paperLight} stroke={K.red} strokeWidth="5" opacity={ease(frame, cueFrame(0, 6), 22)} />
+        <g opacity={warning} transform={`translate(0 ${interpolate(warning, [0, 1], [20, 0])})`}>
+          <rect x="530" y="535" width="560" height="122" rx="10" fill="#C6283D" />
+          <path d="m582 554 31 58h-62Z" fill={K.paperLight} />
+          <text x="582" y="598" textAnchor="middle" fill="#C6283D" fontFamily="Arial" fontSize="26" fontWeight="700">!</text>
+          <text x="632" y="581" fill={K.paperLight} fontFamily="Arial" fontSize="21" fontWeight="700">RECORD NOT FOUND</text>
+          <text x="632" y="615" fill="#FFE8EC" fontFamily="Arial" fontSize="17">Parents care. Paper can’t keep pace.</text>
+        </g>
       </svg>
     </AbsoluteFill>
   );
@@ -271,8 +325,9 @@ const ActTwo = ({frame}: {frame: number}) => {
   const introduce = spring({frame, fps, config: {damping: 16, stiffness: 86, mass: 1.1}});
   const landing = 1 - ease(frame, cueFrame(1, 2), 32);
   const health = ease(frame, cueFrame(1, 3), 34);
-  const memories = ease(frame, cueFrame(1, 7), 24);
   const reminders = ease(frame, cueFrame(1, 9), 28);
+  const memories = ease(frame, cueFrame(1, 7), 24);
+  const nutrition = ease(frame, cueFrame(1, 8), 22) * (1 - reminders);
   const firstMemory = ease(frame, 18, 26);
   const secondMemory = ease(frame, cueFrame(1, 7) + 6, 24);
   const thirdMemory = ease(frame, cueFrame(1, 7) + 18, 24);
@@ -286,23 +341,23 @@ const ActTwo = ({frame}: {frame: number}) => {
   const phoneY = (1 - introduce) * 80;
 
   return (
-    <AbsoluteFill style={{background: 'linear-gradient(125deg, #F1E3C9 0%, #F7EEDC 54%, #E8D4B5 100%)', color: K.ink, overflow: 'hidden'}}>
+    <AbsoluteFill style={{background: 'linear-gradient(125deg, #F8F9FA 0%, #EDF4FA 54%, #FBEFF2 100%)', color: K.ink, overflow: 'hidden'}}>
       <div style={{position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg, transparent 0 37px, rgba(48,74,98,.035) 38px 39px)'}} />
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
-        <circle cx="1690" cy="110" r="260" fill={K.gold} opacity=".2" />
-        <path d="M0 800Q445 734 912 792t1008-20v308H0Z" fill="#E0CDAE" />
-        <path d="M0 800Q445 734 912 792t1008-20" fill="none" stroke="#C2AE8E" strokeWidth="3" />
+        <circle cx="1690" cy="110" r="260" fill={K.red} opacity=".16" />
+        <path d="M0 800Q445 734 912 792t1008-20v308H0Z" fill="#E8EDF3" />
+        <path d="M0 800Q445 734 912 792t1008-20" fill="none" stroke="#C2CCD8" strokeWidth="3" />
         <text x="112" y="154" fill={K.blue} fontSize="19" fontFamily="Arial" fontWeight="700" letterSpacing="3">BABYBOOK+</text>
         <text x="106" y="258" fill={K.ink} fontSize="75" fontFamily="Georgia" fontWeight="700">Health has a history.</text>
         <text x="112" y="310" fill={K.blue} fontSize="25" fontFamily="Arial">A digital companion keeps the whole story close.</text>
         <g opacity={firstMemory} transform={`translate(112 ${426 + floatY(frame, .035, 3) * firstMemory}) scale(${interpolate(firstMemory, [0, 1], [.94, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})})`}>
-          <TinyMemory x={0} y={0} rotate={0} color="#E5B76B" kind={0} caption="That first little laugh" />
+          <TinyMemory x={0} y={0} rotate={0} color="#FFE1E7" kind={0} caption="That first little laugh" />
         </g>
         <g opacity={secondMemory} transform={`translate(388 ${426 + floatY(frame + 12, .035, 3) * secondMemory}) scale(${interpolate(secondMemory, [0, 1], [.94, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})})`}>
-          <TinyMemory x={0} y={0} rotate={0} color="#D8AF70" kind={1} caption="First steps" />
+          <TinyMemory x={0} y={0} rotate={0} color="#DCEBFA" kind={1} caption="First steps" completed={secondMemory} />
         </g>
         <g opacity={thirdMemory} transform={`translate(664 ${426 + floatY(frame + 24, .035, 3) * thirdMemory}) scale(${interpolate(thirdMemory, [0, 1], [.94, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})})`}>
-          <TinyMemory x={0} y={0} rotate={0} color="#C8D4C1" kind={2} caption="A new favorite" />
+          <TinyMemory x={0} y={0} rotate={0} color="#F6DCE5" kind={2} caption="A new favorite" />
         </g>
         <g opacity={health}>
           {['profile', 'allergies', 'growth'].map((item, i) => {
@@ -322,6 +377,7 @@ const ActTwo = ({frame}: {frame: number}) => {
         <g transform={`translate(${1030} ${132 + phoneY}) rotate(2 300 335)`}>
           <ellipse cx="278" cy="710" rx="275" ry="28" fill={K.night} opacity=".18" />
           <rect x="42" y="0" width="460" height="710" rx="56" fill={K.night} />
+          <path d="M500 14 516 22v648l-14 22-2-2Z" fill={K.blue} />
           <rect x="55" y="13" width="434" height="684" rx="46" fill={K.paperLight} />
           <rect x="178" y="13" width="188" height="31" rx="15" fill={K.night} />
           <text x="91" y="82" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="2">BABYBOOK+</text>
@@ -367,6 +423,15 @@ const ActTwo = ({frame}: {frame: number}) => {
             <text x="300" y="461" fill={K.blue} fontFamily="Georgia" fontSize="24">✳</text>
             <text x="300" y="490" fill={K.ink} fontFamily="Arial" fontSize="15" fontWeight="700">Memories</text>
           </g>
+          <g opacity={nutrition}>
+            <rect x="82" y="540" width="378" height="107" rx="20" fill="#E6F0FA" />
+            <circle cx="119" cy="580" r="13" fill={K.red} />
+            <path d="M119 567q0-8 8-8M119 580q-7-10 0-13 7 3 0 13Z" fill="none" stroke={K.paperLight} strokeWidth="2.5" strokeLinecap="round" />
+            <text x="145" y="580" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="1">DAILY NUTRITION</text>
+            <text x="109" y="616" fill={K.ink} fontFamily="Arial" fontSize="17">2 meals logged today</text>
+            <circle cx="408" cy="589" r="15" fill={K.green} />
+            <path d="m401 589 5 5 10-11" fill="none" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
           <g opacity={reminders}>
             <rect x="82" y="540" width="378" height="107" rx="20" fill={K.night} />
             <circle cx="119" cy="580" r="12" fill={K.gold} />
@@ -398,12 +463,17 @@ const ActThree = ({frame}: {frame: number}) => {
   const selectionStart = cueFrame(2, 4);
   const scanStart = cueFrame(2, 5);
   const qrStart = selectionStart + 160;
-  const share = ease(frame, selectionStart, 24) * (1 - ease(frame, scanStart - 8, 24));
+  const revokeStart = cueFrame(2, 6);
+  const share = ease(frame, selectionStart, 24) * (1 - ease(frame, revokeStart + 12, 24));
   const scan = ease(frame, scanStart, 26);
-  const revoke = ease(frame, cueFrame(2, 6), 24);
+  const revoke = ease(frame, revokeStart, 18);
+  const revokeShatter = sweep(frame, revokeStart, revokeStart + 24);
+  const viewer = scan * (1 - revokeShatter);
+  const viewEnded = scan * revokeShatter;
   const audit = ease(frame, cueFrame(2, 8), 18);
   const time = sweep(frame, qrStart, qrStart + 72);
-  const revokeProgress = sweep(frame, cueFrame(2, 6), cueFrame(2, 7));
+  const countdown = Math.max(0, 60 - Math.floor(Math.max(0, frame - qrStart) / fps));
+  const tap = sweep(frame, revokeStart, revokeStart + 12);
 
   return (
     <AbsoluteFill style={{background: 'linear-gradient(125deg, #18263B 0%, #233C4F 60%, #315B5C 100%)', color: K.paperLight, overflow: 'hidden'}}>
@@ -418,8 +488,12 @@ const ActThree = ({frame}: {frame: number}) => {
           <ParentAndChild x={0} y={0} scale={1.04} coat={K.red} childCoat={K.gold} />
         </g>
         <path d="M300 650C480 590 618 620 771 540s120-140 221-135" fill="none" stroke={K.gold} strokeWidth="4" strokeDasharray="7 15" opacity=".75" />
-        <g opacity={share} transform={`translate(${interpolate(share, [0, 1], [-32, 0])} 0)`}>
-          <path d="M570 360h292v308H570Z" fill={K.paper} transform={`rotate(-3 716 514)`} />
+        <path d="M1330 340v426" stroke={K.blueLight} strokeWidth="2" strokeDasharray="5 12" opacity=".42" />
+        <text x="1390" y="325" fill={K.blueLight} fontFamily="Arial" fontSize="14" fontWeight="700" letterSpacing="2">CLINICIAN VIEW</text>
+        <g opacity={share} transform={`translate(${interpolate(share, [0, 1], [-32, 0])} 0) rotate(-2 716 514)`}>
+          <rect x="570" y="360" width="292" height="308" rx="26" fill={K.night} />
+          <rect x="580" y="370" width="272" height="288" rx="19" fill={K.paperLight} />
+          <rect x="682" y="375" width="68" height="6" rx="3" fill={K.blue} />
           <text x="605" y="412" fill={K.blue} fontFamily="Arial" fontSize="15" fontWeight="700">CHOOSE TO SHARE</text>
           {['Growth chart', 'Allergy summary', 'Vaccinations'].map((label, i) => {
             const check = ease(frame, selectionStart + 18 + i * 24, 12);
@@ -444,13 +518,45 @@ const ActThree = ({frame}: {frame: number}) => {
               </g>
             );
           })}
+          <g transform={`translate(716 636) scale(${1 - .07 * Math.sin(tap * Math.PI)}) translate(-716 -636)`}>
+            <rect x="605" y="615" width="222" height="36" rx="8" fill={K.red} />
+            <text x="716" y="639" textAnchor="middle" fill={K.paperLight} fontFamily="Arial" fontSize="15" fontWeight="700">Revoke access</text>
+          </g>
         </g>
-        <g opacity={ease(frame, qrStart, 20)} transform={`translate(950 ${390 + floatY(frame, .04, 8)}) rotate(-3 135 135)`}>
-          <rect x="0" y="0" width="285" height="285" rx="10" fill={K.paperLight} />
-          <g transform="translate(24 24)"><QrMark size={237} progress={time} /></g>
-          <text x="142" y="318" fill={K.paper} textAnchor="middle" fontFamily="Arial" fontSize="15" fontWeight="700" letterSpacing="2">ONE-TIME VISIT TOKEN</text>
+        <g transform={`translate(950 ${390 + floatY(frame, .04, 8)}) rotate(-3 135 135)`}>
+          <g opacity={ease(frame, qrStart, 20) * (1 - revokeShatter)}>
+            <rect x="0" y="0" width="285" height="285" rx="10" fill={K.paperLight} />
+            <path d="M10 0h265q10 0 10 10v19H0V10Q0 0 10 0Z" fill="#E4EFFA" />
+            <text x="15" y="19" fill={K.blue} fontFamily="Arial" fontSize="10" fontWeight="700" letterSpacing="1">TIME-LIMITED TOKEN</text>
+            <text x="222" y="19" textAnchor="end" fill={K.ink} fontFamily="Arial" fontSize="11" fontWeight="700">{countdown}s</text>
+            <circle cx="258" cy="14" r="8" fill="none" stroke={K.paperShade} strokeWidth="2" />
+            <circle cx="258" cy="14" r="8" fill="none" stroke={K.red} strokeWidth="2" strokeDasharray="50.3" strokeDashoffset={50.3 * (1 - time)} transform="rotate(-90 258 14)" />
+            <circle cx="142" cy="145" r="118" fill="none" stroke={K.red} strokeWidth="2" opacity={.16 + .18 * Math.sin(frame * .16)} />
+            <g transform="translate(27 30)"><QrMark size={231} progress={time * (1 - revokeShatter)} /></g>
+            <text x="142" y="318" fill={K.paper} textAnchor="middle" fontFamily="Arial" fontSize="15" fontWeight="700" letterSpacing="2">ONE-TIME VISIT TOKEN</text>
+          </g>
+          <g>
+            {Array.from({length: 20}, (_, i) => {
+              const x = 43 + (i * 47) % 192;
+              const y = 43 + (i * 71) % 192;
+              const angle = i * 2.4;
+              const travel = 76 * revokeShatter;
+              return (
+                <rect
+                  key={i}
+                  x={x + Math.cos(angle) * travel}
+                  y={y + Math.sin(angle) * travel}
+                  width={4 + (i % 3)}
+                  height={4 + (i % 3)}
+                  fill={i % 2 === 0 ? K.red : K.blue}
+                  opacity={Math.sin(revokeShatter * Math.PI)}
+                />
+              );
+            })}
+          </g>
         </g>
-        <g opacity={scan} transform={`translate(${interpolate(scan, [0, 1], [1800, 1470])} 356)`}>
+        <g opacity={viewer} transform={`translate(${interpolate(scan, [0, 1], [1800, 1470])} 356)`}>
+          <rect x="-12" y="-12" width="360" height="400" rx="20" fill={K.night} />
           <rect x="0" y="0" width="336" height="376" rx="6" fill={K.paperLight} />
           <rect x="0" y="0" width="336" height="65" fill={K.blue} />
           <circle cx="42" cy="33" r="13" fill={K.gold} />
@@ -465,11 +571,17 @@ const ActThree = ({frame}: {frame: number}) => {
           ))}
           <text x="28" y="338" fill={K.redDark} fontFamily="Arial" fontSize="12" fontWeight="700">EXPIRES WHEN THE VISIT ENDS</text>
         </g>
-        <g opacity={revoke} transform="translate(1004 802)">
-          <circle cx="0" cy="0" r="37" fill="none" stroke="#728B88" strokeWidth="5" />
-          <circle cx="0" cy="0" r="37" fill="none" stroke={K.red} strokeWidth="5" strokeDasharray="232" strokeDashoffset={232 * (1 - revokeProgress)} transform="rotate(-90)" />
-          <path d="M-13 0h26M0-13v26" stroke={K.paperLight} strokeWidth="5" strokeLinecap="round" transform={`rotate(${45 * revoke})`} />
-          <text x="61" y="6" fill={K.paperLight} fontFamily="Arial" fontSize="16" fontWeight="700">Access can be revoked.</text>
+        <g opacity={viewEnded} transform="translate(1470 356)">
+          <rect x="0" y="0" width="336" height="376" rx="6" fill={K.night} />
+          <circle cx="168" cy="142" r="34" fill={K.red} />
+          <path d="M155 140v-8a13 13 0 0 1 26 0v8m-31 0h36v27h-36z" fill="none" stroke={K.paperLight} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          <text x="168" y="216" textAnchor="middle" fill={K.paperLight} fontFamily="Arial" fontSize="17" fontWeight="700">ACCESS REVOKED</text>
+          <text x="168" y="244" textAnchor="middle" fill="#C5D5CA" fontFamily="Arial" fontSize="14">This visit can no longer view the record.</text>
+        </g>
+        <g opacity={revoke} transform="translate(968 738)">
+          <circle cx="0" cy="0" r="12" fill={K.red} />
+          <path d="M-4-4 4 4M4-4-4 4" stroke={K.paperLight} strokeWidth="3" strokeLinecap="round" />
+          <text x="24" y="5" fill={K.paperLight} fontFamily="Arial" fontSize="15" fontWeight="700">Token revoked</text>
         </g>
         <g opacity={audit} transform="translate(1400 800)">
           <path d="M0 0h340M0 38h290M0 76h320" stroke="#7EA09D" strokeWidth="3" />
@@ -492,17 +604,31 @@ const ActFour = ({frame}: {frame: number}) => {
   const bridge = sweep(frame, cueFrame(3, 1), cueFrame(3, 3));
   const family = ease(frame, cueFrame(3, 2), 32);
   const finish = ease(frame, cueFrame(3, 3), 35);
+  const collageStart = cueFrame(3, 1);
+  const collage = ease(frame, collageStart, 24);
+  const collageScroll = interpolate(frame, [collageStart, collageStart + 240], [0, 96], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const outro = ease(frame, actFrames[3] - 72, 36);
   const bridgeNodes = [[631, 563], [797, 481], [970, 526], [1132, 626], [1293, 644]];
 
   return (
-    <AbsoluteFill style={{background: 'linear-gradient(135deg, #EDB85E 0%, #F2D9A7 44%, #D7BA98 100%)', color: K.ink, overflow: 'hidden'}}>
+    <AbsoluteFill style={{background: 'linear-gradient(135deg, #F8F9FA 0%, #EDF4FA 44%, #FBEFF2 100%)', color: K.ink, overflow: 'hidden'}}>
       <div style={{position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(23,36,58,.12) 1px, transparent 1px)', backgroundSize: '32px 32px'}} />
       <svg viewBox="0 0 1920 1080" width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
-        <circle cx="959" cy="475" r="345" fill={K.paperLight} opacity=".26" />
-        <path d="M0 805Q440 728 900 788t1020-25v317H0Z" fill="#B69270" opacity=".47" />
-        <path d="M0 805Q440 728 900 788t1020-25" fill="none" stroke="#9D795F" strokeWidth="3" />
-        <text x="108" y="148" fill={K.redDark} fontFamily="Arial" fontSize="19" fontWeight="700" letterSpacing="3">THE WHOLE STORY, HELD TOGETHER</text>
+        <defs>
+          <clipPath id="act-four-memory-strip">
+            <rect x="662" y="382" width="562" height="64" rx="5" />
+          </clipPath>
+        </defs>
+        <circle cx="959" cy="475" r="345" fill={K.blue} opacity=".08" />
+        <path d="M0 805Q440 728 900 788t1020-25v317H0Z" fill="#E8EDF3" opacity=".82" />
+        <path d="M0 805Q440 728 900 788t1020-25" fill="none" stroke="#B8C6D4" strokeWidth="3" />
+        <text x="108" y="148" fill={K.blue} fontFamily="Arial" fontSize="19" fontWeight="700" letterSpacing="3">THE WHOLE STORY, HELD TOGETHER</text>
         <text x="102" y="246" fill={K.ink} fontFamily="Georgia" fontSize="74" fontWeight="700">Memory and medicine.</text>
+        <g opacity={bridge}>
+          <text x="370" y="360" textAnchor="middle" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="2">INPUT</text>
+          <text x="945" y="360" textAnchor="middle" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="2">PROCESS</text>
+          <text x="1500" y="286" textAnchor="middle" fill={K.blue} fontFamily="Arial" fontSize="13" fontWeight="700" letterSpacing="2">OUTPUT</text>
+        </g>
         <g opacity={book} transform={`translate(155 ${365 + floatY(frame, .025, 5)}) rotate(-4 220 170)`}>
           <path d="M0 28Q24 4 218 31V334Q43 313 0 344Z" fill={K.paperLight} />
           <path d="M218 31Q403 1 437 29V344Q395 314 218 334Z" fill={K.paper} />
@@ -526,6 +652,23 @@ const ActFour = ({frame}: {frame: number}) => {
           <circle cx="111" cy="503" r="8" fill={K.green} />
           <circle cx="143" cy="503" r="8" fill={K.blueLight} />
         </g>
+        <g opacity={collage}>
+          <rect x="650" y="372" width="590" height="82" rx="8" fill={K.paperLight} stroke={K.blueLight} strokeWidth="2" />
+          <g clipPath="url(#act-four-memory-strip)">
+            <g transform={`translate(${671 - collageScroll} 384) scale(.31)`}>
+              {Array.from({length: 8}, (_, i) => (
+                <TinyMemory
+                  key={i}
+                  x={i * 246}
+                  y={0}
+                  rotate={0}
+                  color={['#DCEBFA', '#FCE3E9', '#E4EBDD', '#F4EAD7'][i % 4]}
+                  kind={i % 3}
+                />
+              ))}
+            </g>
+          </g>
+        </g>
         <path d="M562 630C711 470 820 443 970 526S1193 717 1372 607" fill="none" stroke={K.paperLight} strokeWidth="23" strokeLinecap="round" opacity=".54" />
         <path d="M562 630C711 470 820 443 970 526S1193 717 1372 607" fill="none" stroke={K.red} strokeWidth="7" strokeLinecap="round" pathLength="1" strokeDasharray="1" strokeDashoffset={1 - bridge} />
         {bridgeNodes.map(([x, y], i) => {
@@ -543,6 +686,13 @@ const ActFour = ({frame}: {frame: number}) => {
         <g opacity={finish} transform={`translate(0 ${interpolate(finish, [0, 1], [28, 0])})`}>
           <text x="960" y="316" textAnchor="middle" fill={K.night} fontFamily="Georgia" fontSize="34" fontWeight="700">One story. Across a lifetime.</text>
           <path d="M805 338h310" stroke={K.red} strokeWidth="5" strokeLinecap="round" />
+        </g>
+        <g opacity={outro}>
+          <rect x="0" y="0" width="1920" height="1080" fill={K.paperLight} />
+          <circle cx="803" cy="522" r="39" fill={K.blue} />
+          <text x="803" y="532" textAnchor="middle" fill={K.paperLight} fontFamily="Arial" fontSize="24" fontWeight="700">B+</text>
+          <text x="860" y="540" fill={K.ink} fontFamily="Georgia" fontSize="52" fontWeight="700">BabyBook+</text>
+          <path d="M762 582h396" stroke={K.red} strokeWidth="5" strokeLinecap="round" />
         </g>
       </svg>
     </AbsoluteFill>
