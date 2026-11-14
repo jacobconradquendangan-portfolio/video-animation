@@ -103,7 +103,7 @@ const rawActs = [
     id: '04',
     title: 'The hybrid future',
     audio: 'audio/act-04.mp3',
-    duration: 33.76,
+    duration: 39.76,
     captions: [
       'By marrying clinical precision with sentimental preservation, BabyBook+ bridges the gap between generations.',
       'Physical keepsakes capture the memories;',

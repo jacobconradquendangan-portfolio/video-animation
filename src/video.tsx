@@ -1268,26 +1268,26 @@ const ActTwo = ({frame}: {frame: number}) => {
           })}
         </g>
 
-        {/* Narration-synced images — replaces the mobile phone */}
+        {/* Narration-synced images */}
         <image
           key="act2-active-image"
           x={1000}
-          y={100}
-          width={520}
-          height={720}
+          y={110}
+          width={440}
+          height={700}
           href={staticFile(activeImage ?? 'image/enter babybook+.jpg')}
-          preserveAspectRatio="xMidYMid slice"
+          preserveAspectRatio="xMidYMid meet"
           style={{opacity: 1 - crossProgress}}
         />
         {nextImage && (
           <image
             key="act2-next-image"
             x={1000}
-            y={100}
-            width={520}
-            height={720}
+            y={110}
+            width={440}
+            height={700}
             href={staticFile(nextImage)}
-            preserveAspectRatio="xMidYMid slice"
+            preserveAspectRatio="xMidYMid meet"
             style={{opacity: crossProgress}}
           />
         )}
@@ -2434,6 +2434,11 @@ const ActFour = ({frame}: {frame: number}) => {
       <Sequence from={logoStart} durationInFrames={66}>
         <Audio src={staticFile('audio/act-04-logo-sfx.wav')} volume={0.45} />
       </Sequence>
+
+      {/* Ending audio — synced slightly after BabyBook+ logo animation starts */}
+      <Sequence from={logoStart + 6} durationInFrames={Math.ceil(6 * fps)}>
+        <Audio src={staticFile('audio/babybook+ ending.mp3')} volume={1} />
+      </Sequence>
     </AbsoluteFill>
   );
 };
@@ -2665,7 +2670,9 @@ const Video = () => (
         <Sequence key={act.id} from={from} durationInFrames={actFrames[index]} name={act.title}>
           <ActScene actIndex={index} />
           <Audio src={staticFile(act.audio)} volume={1} />
-          <Audio src={staticFile(`audio/act-${act.id}-score.wav`)} volume={scoreVolume} />
+          {act.id !== '05' && (
+            <Audio src={staticFile(`audio/act-${act.id}-score.wav`)} volume={scoreVolume} />
+          )}
         </Sequence>
       );
     })}
